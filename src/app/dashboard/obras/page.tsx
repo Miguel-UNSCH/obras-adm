@@ -1,5 +1,6 @@
 import CalendarCustom from "@/components/views/calendar-custom";
 import MapCustom from "@/components/views/map-custom";
+import MapDrawingPolygon from "@/components/views/map-drawing-polygon";
 
 
 function Page() {
@@ -10,8 +11,8 @@ function Page() {
       <div className="bg-gradient-to-tr from-[#FFCEB7] dark:from-emerald-800 dark:to-orange-950 to-[#E3D8D6] rounded-3xl shadow-xl">
         <CalendarCustom />
       </div>
-      <div className="rounded-3xl bg-secondary p-4">
-        
+      <div className="rounded-3xl overflow-hidden">
+        <MapDrawingPolygon />
       </div>
       <div className="rounded-3xl overflow-hidden">
         <MapCustom />
