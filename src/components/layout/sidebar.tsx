@@ -2,6 +2,7 @@ import Image from "next/image";
 import { ModeChange } from "../mode-change";
 import Link from "next/link";
 import SidebarOptions from "./sidebar-options";
+import AvatarUser from "./avatar-user";
 
 function Sidebar() {
   return (
@@ -25,13 +26,7 @@ function Sidebar() {
       <SidebarOptions />
       <div className="space-y-4">
         <ModeChange />
-        <Image 
-          src='/user.png' 
-          alt="user" 
-          width={40} 
-          height={40} 
-          className="border-2 border-primary rounded-full cursor-pointer bg-white"
-        />
+        <AvatarUser />
       </div>
     </div>
   )
