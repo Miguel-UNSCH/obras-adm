@@ -3,8 +3,8 @@ import CuentaContainer from "./cuenta-container";
 async function Page() {
 
   const formattedSession = {
-      name: "",
-      email: "",
+      name: "Nombre",
+      email: "correo@gmail.com",
       role: "usuario",
   };
 
