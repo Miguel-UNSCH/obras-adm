@@ -67,7 +67,6 @@ export function CuentaContainer({ session }: CuentaContainerProps) {
           )}
         />
 
-        {/* Correo Electrónico */}
         <FormField
           control={form.control}
           name="email"
@@ -82,7 +81,6 @@ export function CuentaContainer({ session }: CuentaContainerProps) {
           )}
         />
 
-        {/* Usuario */}
         <FormField
           control={form.control}
           name="role"
@@ -97,7 +95,6 @@ export function CuentaContainer({ session }: CuentaContainerProps) {
           )}
         />
 
-        {/* Contraseña */}
         <FormField
           control={form.control}
           name="contrasenia"
@@ -124,8 +121,7 @@ export function CuentaContainer({ session }: CuentaContainerProps) {
             </FormItem>
           )}
         />
-        
-        {/* Nueva Contraseña */}
+
         <FormField
           control={form.control}
           name="nuevacontrasenia"
@@ -158,7 +154,6 @@ export function CuentaContainer({ session }: CuentaContainerProps) {
           )}
         />
 
-        {/* Confirmar Nueva Contraseña */}
         <FormField
           control={form.control}
           name="confirmarnuevacontrasenia"
