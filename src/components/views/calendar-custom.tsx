@@ -8,7 +8,7 @@ function CalendarCustom() {
 
   return (
     <div className="p-4 flex flex-col justify-between h-full">
-      cuadro de selección
+      Calendario
       <Calendar mode="single" selected={date} onSelect={setDate} />
     </div>
   );

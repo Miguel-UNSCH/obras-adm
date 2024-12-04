@@ -9,17 +9,16 @@ function SideDashboard() {
         <span>Obras</span>
       </div>
       <div className="flex flex-col gap-4">
-        <Input placeholder="Buscar..." />
         <Select>
           <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Theme" />
+            <SelectValue placeholder="Seleccionar" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="light">Light</SelectItem>
-            <SelectItem value="dark">Dark</SelectItem>
-            <SelectItem value="system">System</SelectItem>
+            <SelectItem value="directa">Obras de administración directa</SelectItem>
+            <SelectItem value="contrata">Obras de administración por contrata</SelectItem>
           </SelectContent>
         </Select>
+        <Input placeholder="Buscar..." />
         <Button>
           Buscar
         </Button>

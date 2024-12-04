@@ -12,7 +12,6 @@ function MapDrawingPolygon() {
   const [points, setPoints] = useState<[number, number][]>([]);
   // Especifica el tipo del estado 'polygonData' como 'Feature<Polygon> | null'
   const [polygonData, setPolygonData] = useState<Feature<Polygon> | null>(null);
-
   // Manejador para los clics en el mapa
   const handleMapClick = useCallback((event: MapLayerMouseEvent) => {
     const { lng, lat } = event.lngLat;
