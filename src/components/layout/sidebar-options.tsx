@@ -26,16 +26,16 @@ function SidebarOptions() {
       >
         <BsDatabaseFillCheck className="text-xl dark:hover:text-white" />
       </Link>
-      <Link href={'/dashboard'} 
+      <Link href={'/dashboard/notificaciones'} 
         className={` p-2 rounded-full ${
-          pathname === '/dashboard/1'? 'bg-[#CDCDCD] dark:bg-[#40404B] dark:text-white' : 'text-[#030303] dark:text-[#8E8EA8]'
+          pathname === '/dashboard/notificaciones'? 'bg-[#CDCDCD] dark:bg-[#40404B] dark:text-white' : 'text-[#030303] dark:text-[#8E8EA8]'
         }`}
       >
         <IoNotifications className="text-xl dark:hover:text-white" />
       </Link>
-      <Link href={'/dashboard'} 
+      <Link href={'/dashboard/configuraciones'} 
         className={` p-2 rounded-full ${
-          pathname === '/dashboard/2'? 'bg-[#CDCDCD] dark:bg-[#40404B] dark:text-white' : 'text-[#030303] dark:text-[#8E8EA8]'
+          pathname === '/dashboard/configuraciones'? 'bg-[#CDCDCD] dark:bg-[#40404B] dark:text-white' : 'text-[#030303] dark:text-[#8E8EA8]'
         }`}
       >
         <IoSettings className="text-xl dark:hover:text-white" />
