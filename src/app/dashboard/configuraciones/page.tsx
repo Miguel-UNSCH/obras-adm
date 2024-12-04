@@ -1,6 +1,11 @@
+import { getDoc } from "@/actions/obras-actions";
 import CuentaContainer from "./cuenta-container";
 
+
 async function Page() {
+
+  const Doc = await getDoc()
+  console.log(Doc)
 
   const formattedSession = {
       name: "Juan",
