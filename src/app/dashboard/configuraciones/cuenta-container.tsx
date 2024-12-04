@@ -1,6 +1,6 @@
 "use client";
 
-import { FormProvider, useForm, Controller } from "react-hook-form"; // Usar FormProvider para envolver el formulario
+import { FormProvider, useForm, Controller } from "react-hook-form"; 
 import { Input } from "@/components/ui/input"; 
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -27,7 +27,13 @@ type FormData = {
 };
 
 export function CuentaContainer({ session }: CuentaContainerProps) {
-  const form = useForm<FormData>();
+  const form = useForm<FormData>({
+    defaultValues: {
+      name: session.name,
+      email: session.email,
+      role: session.role,
+    },
+  });
 
   const [showPassword, setShowPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
@@ -44,8 +50,9 @@ export function CuentaContainer({ session }: CuentaContainerProps) {
   return (
     <FormProvider {...form}> 
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 max-w-md mx-auto p-4 w-full">
-      <h2 className="text-2xl font-bold mb-4 text-center">Mi Cuenta</h2>
-
+        <h2 className="text-2xl font-bold mb-4 text-center">Mi Cuenta</h2>
+        
+        {/* Nombre */}
         <FormField
           control={form.control}
           name="name"
@@ -53,13 +60,14 @@ export function CuentaContainer({ session }: CuentaContainerProps) {
             <FormItem>
               <FormLabel>Nombre:</FormLabel>
               <FormControl>
-                <Input placeholder="Administrador" {...field} />
+                <Input placeholder="Administrador" {...field} disabled/>
               </FormControl>
               <FormMessage className="text-end" />
             </FormItem>
           )}
         />
 
+        {/* Correo Electrónico */}
         <FormField
           control={form.control}
           name="email"
@@ -67,13 +75,14 @@ export function CuentaContainer({ session }: CuentaContainerProps) {
             <FormItem>
               <FormLabel>Correo Electrónico:</FormLabel>
               <FormControl>
-                <Input placeholder="admin@admin.com" {...field} />
+                <Input placeholder="admin@admin.com" {...field} disabled/>
               </FormControl>
               <FormMessage className="text-end" />
             </FormItem>
           )}
         />
 
+        {/* Usuario */}
         <FormField
           control={form.control}
           name="role"
@@ -81,7 +90,7 @@ export function CuentaContainer({ session }: CuentaContainerProps) {
             <FormItem>
               <FormLabel>Usuario:</FormLabel>
               <FormControl>
-                <Input placeholder="Admin" {...field} />
+                <Input placeholder="Admin" {...field} disabled/>
               </FormControl>
               <FormMessage className="text-end" />
             </FormItem>
@@ -120,6 +129,11 @@ export function CuentaContainer({ session }: CuentaContainerProps) {
         <FormField
           control={form.control}
           name="nuevacontrasenia"
+          rules={{
+            required: "La nueva contraseña es obligatoria",
+            validate: (value) =>
+              value === form.getValues("confirmarnuevacontrasenia") || "Las contraseñas no coinciden", // Validación de coincidencia
+          }}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Nueva Contraseña:</FormLabel>
@@ -148,6 +162,11 @@ export function CuentaContainer({ session }: CuentaContainerProps) {
         <FormField
           control={form.control}
           name="confirmarnuevacontrasenia"
+          rules={{
+            required: "Confirmar la nueva contraseña es obligatorio",
+            validate: (value) =>
+              value === form.getValues("nuevacontrasenia") || "Las contraseñas no coinciden", // Validación de coincidencia
+          }}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Confirmar Nueva Contraseña:</FormLabel>
