@@ -4,15 +4,13 @@ import { useEffect, useState } from 'react';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import Map, { Marker, NavigationControl, Source, Layer } from 'react-map-gl/maplibre';
 import { Feature, Polygon } from 'geojson';
-import { useRouter } from 'next/navigation';
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { Button } from '../ui/button';
 
 function CustomMap() {
   const [isClient, setIsClient] = useState(false);
-  const router = useRouter();
-
-  const [isActive, setIsActive] = useState(false);
+  const [selectedMarker, setSelectedMarker] = useState<string | null>(null); // Nuevo estado para el marcador seleccionado
+  const [showDetails, setShowDetails] = useState<boolean>(false); // Estado para mostrar/ocultar la ventana de detalles
 
   useEffect(() => {
     setIsClient(true);
@@ -22,6 +20,7 @@ function CustomMap() {
     return null;
   }
 
+  // Datos de los polígonos
   const polygonData: Feature<Polygon> = {
     type: 'Feature',
     properties: {},
@@ -74,28 +73,35 @@ function CustomMap() {
     },
   };
 
+  // Capas de los polígonos
   const polygonLayer1 = {
     id: 'polygon-layer-1',
-    type: 'fill',
+    type: 'fill' as 'fill', // Asegúrate de que el tipo sea 'fill' para capas de polígonos
     paint: {
       'fill-color': '#088ff5',
       'fill-opacity': 0.3,
     },
-  } as const;
+  };
 
   const polygonLayer2 = {
     id: 'polygon-layer-2',
-    type: 'fill',
+    type: 'fill' as 'fill', // Asegúrate de que el tipo sea 'fill' para capas de polígonos
     paint: {
       'fill-color': '#ff6347',
       'fill-opacity': 0.3,
     },
-  } as const;
-
-  const handleMarkerClick = () => {
-    setIsActive(true)
   };
 
+  // Función para manejar el clic en los marcadores
+  const handleMarkerClick = (id: string) => {
+    setSelectedMarker(id); // Al hacer clic, actualizamos el estado con el id del marcador
+    setShowDetails(true); // Mostrar el detalle de la obra cuando se hace clic en el marcador
+  };
+
+  // Función para cerrar la ventana de detalles
+  const handleCloseDetails = () => {
+    setShowDetails(false); // Ocultar la ventana de detalles
+  };
 
   return (
     <Map
@@ -118,33 +124,60 @@ function CustomMap() {
         }}
       />
 
+      {/* Marcador para la obra N1 */}
       <Marker
         longitude={-74.220767}
         latitude={-13.146605}
-        onClick={handleMarkerClick}
+        onClick={() => handleMarkerClick('obra1')} // Pasa un id único para cada marcador
       >
-        <FaMapMarkerAlt className='text-[#FF0000] text-4xl'/>
-        <div className={`absolute top-0 left-0 ${isActive? 'block': 'hidden'}`}>
+        <FaMapMarkerAlt className="text-[#FF0000] text-4xl" />
+        <div className={`absolute top-0 left-0 ${selectedMarker === 'obra1' && showDetails ? 'block' : 'hidden'}`}>
           <p>TITULO: OBRAS N1</p>
           <br />
-          <Button>Detalles</Button>
+          <Button onClick={handleCloseDetails}>Cerrar</Button>
         </div>
       </Marker>
 
-
+      {/* Marcador para la obra N2 */}
       <Marker
         longitude={-74.204258}
         latitude={-13.160892}
-        onClick={handleMarkerClick}
+        onClick={() => handleMarkerClick('obra2')} // Pasa un id único para cada marcador
       >
-        <FaMapMarkerAlt className='text-[#FF0000] text-4xl'/>
-        <div className={`absolute top-0 left-0 ${isActive? 'block': 'hidden'}`}>
-          <p>TITULO: OBRAS N2</p>
-          <br />
-          <Button>Detalles</Button>
+        <FaMapMarkerAlt className="text-[#FF0000] text-4xl" />
+        <div className={`absolute top-0 left-0 ${selectedMarker === 'obra2' && showDetails ? 'block' : 'hidden'}`}>
+          <div className="bg-gradient-to-r from-gray-900 to-black text-white p-4 rounded-lg shadow-lg w-max-6x1 w-[300px] mx-auto text-justify">
+            <h2 className="text-[14px] font-extrabold mb-4 text-center">Detalles del Proyecto</h2>
+            <div className="space-y-3">
+              <div>
+                <strong className="text-[13px]">CUI:</strong> <span className="text-[12px] text-gray-200">4124523</span>
+              </div>
+              <div>
+                <strong className="text-[13px]">Proyecto:</strong> <span className="text-[12px] text-gray-200">OAD</span>
+              </div>
+              <div>
+                <strong className="text-[13px]">Descripción del Proyecto:</strong>
+                <p className="text-[12px] leading-relaxed text-gray-200">
+                  MEJORAMIENTO Y AMPLIACION DE LOS SERVICIOS DEL SANTUARIO DE LA MEMORIA LA HOYADA EN EL DISTRITO DE ANDRES AVELINO CACERES -
+                  PROVINCIA DE HUAMANGA - DEPARTAMENTO DE AYACUCHO
+                </p>
+              </div>
+              <div>
+                <strong className="text-[13px]">Residente:</strong> <span className="text-[12px] text-gray-200">Ing. Juan Pérez</span>
+              </div>
+            </div>
+            <Button
+              className="mx-auto block"
+              onClick={handleCloseDetails}
+            >
+              Cerrar
+            </Button>
+
+          </div>
         </div>
       </Marker>
 
+      {/* Capas de polígonos */}
       <Source id="polygon-source" type="geojson" data={polygonData}>
         <Layer {...polygonLayer1} />
       </Source>

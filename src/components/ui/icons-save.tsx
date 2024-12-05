@@ -1,10 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const ButtonSave = () => {
+const ButtonSave = ({ onClick }: { onClick: () => void }) => {
   return (
     <StyledWrapper>
-      <button>
+      <button onClick={onClick}>
         <div className="svg-wrapper-1">
           <div className="svg-wrapper">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width={30} height={30} className="icon">
@@ -12,7 +12,7 @@ const ButtonSave = () => {
             </svg>
           </div>
         </div>
-        <span>Save</span>
+        <span>Guardar</span>
       </button>
     </StyledWrapper>
   );
@@ -21,7 +21,7 @@ const ButtonSave = () => {
 const StyledWrapper = styled.div`
   button {
     font-family: inherit;
-    font-size: 20px;
+    font-size: 12px;
     background: #212121;
     color: white;
     fill: rgb(155, 153, 153);
@@ -48,7 +48,7 @@ const StyledWrapper = styled.div`
   }
 
   button:hover {
-    background: #000;
+    background: #ADD293;
   }
 
   button:hover .svg-wrapper {
@@ -57,7 +57,7 @@ const StyledWrapper = styled.div`
   }
 
   button:hover svg {
-    transform: translateX(1.2em) scale(1.1);
+    transform: translateX(1.6em) scale(1.1);
     fill: #fff;
   }
 
@@ -68,6 +68,7 @@ const StyledWrapper = styled.div`
 
   button:active {
     transform: scale(0.95);
-  }`;
+  }
+`;
 
 export default ButtonSave;

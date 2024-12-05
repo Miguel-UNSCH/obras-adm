@@ -6,8 +6,8 @@ import { useState, useCallback } from 'react';
 import { Feature, Polygon } from 'geojson';
 import { TbArrowBack, TbPointFilled } from "react-icons/tb";
 import { Button } from '../ui/button';
-import ButtonSave from '../icons-save';
-
+import ButtonSave from '../ui/icons-save';
+import ButtonBack from '../ui/icons-back';
 
 function MapDrawingPolygon() {
   const [points, setPoints] = useState<[number, number][]>([]);
@@ -59,17 +59,22 @@ function MapDrawingPolygon() {
     });
   };
 
+  // Función para manejar el click en el botón de guardar
+  const handleSaveClick = () => {
+    console.log(points);
+  };
+
   return (
     <div className="relative w-full h-full">
-      <Button 
-        className='absolute top-4 left-4 z-10 bg-cyan-500 text-white px-4 py-2 rounded-md flex items-center'
-        onClick={handleButtonClick}
-      >
-        <span>Atrás</span>
-        <TbArrowBack size={20} />
-      </Button>
-      <ButtonSave></ButtonSave>
 
+      <div className='absolute top-4 left-4 z-10'>
+        <ButtonBack onClick={handleButtonClick}/>
+      </div>
+
+      
+      <div className="absolute top-4 right-4 z-10">
+        <ButtonSave onClick={handleSaveClick} />
+      </div>
       <Map
         initialViewState={{
           longitude: -74.219805,
@@ -77,7 +82,7 @@ function MapDrawingPolygon() {
           zoom: 14,
         }}
         attributionControl={false}
-        mapStyle="https://api.maptiler.com/maps/openstreetmap/style.json?key=qHY98vxGerd5lTUUPwyF"
+        mapStyle="https://api.maptiler.com/maps/satellite/style.json?key=qHY98vxGerd5lTUUPwyF"
         onClick={handleMapClick}
         style={{ width: '100%', height: '100%' }}
       >
@@ -91,13 +96,11 @@ function MapDrawingPolygon() {
             borderRadius: "15px",
           }}
         />
-
         {points.map((point, index) => (
           <Marker key={index} longitude={point[0]} latitude={point[1]} color="blue">
             <TbPointFilled size={20} />
           </Marker>
         ))}
-
         {polygonData && (
           <Source id="polygon-source" type="geojson" data={polygonData}>
             <Layer {...polygonLayer} />
