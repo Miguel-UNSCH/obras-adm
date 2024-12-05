@@ -4,26 +4,25 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import Map, { Marker, NavigationControl, Source, Layer, MapLayerMouseEvent } from 'react-map-gl/maplibre';
 import { useState, useCallback } from 'react';
 import { Feature, Polygon } from 'geojson';
+import { TbArrowBack, TbPointFilled } from "react-icons/tb";
+import { Button } from '../ui/button';
+import ButtonSave from '../icons-save';
 
-import { TbPointFilled } from "react-icons/tb";
 
 function MapDrawingPolygon() {
-  // Especifica el tipo del estado 'points' como un array de coordenadas [number, number]
   const [points, setPoints] = useState<[number, number][]>([]);
-  // Especifica el tipo del estado 'polygonData' como 'Feature<Polygon> | null'
   const [polygonData, setPolygonData] = useState<Feature<Polygon> | null>(null);
-  // Manejador para los clics en el mapa
+
   const handleMapClick = useCallback((event: MapLayerMouseEvent) => {
     const { lng, lat } = event.lngLat;
     setPoints((prevPoints) => {
       const newPoints = [...prevPoints, [lng, lat] as [number, number]];
-      // Actualiza los datos del polígono si hay al menos 3 puntos
       if (newPoints.length >= 3) {
         setPolygonData({
           type: 'Feature',
           geometry: {
             type: 'Polygon',
-            coordinates: [newPoints.concat([newPoints[0]])], // Cierra el polígono repitiendo el primer punto
+            coordinates: [newPoints.concat([newPoints[0]])],
           },
           properties: {},
         });
@@ -32,7 +31,6 @@ function MapDrawingPolygon() {
     });
   }, []);
 
-  // Define el estilo del polígono
   const polygonLayer = {
     id: 'polygon-layer',
     type: 'fill',
@@ -42,43 +40,71 @@ function MapDrawingPolygon() {
     },
   } as const;
 
+  const handleButtonClick = () => {
+    setPoints((prevPoints) => {
+      const updatedPoints = prevPoints.slice(0, -1);
+      if (updatedPoints.length >= 3) {
+        setPolygonData({
+          type: 'Feature',
+          geometry: {
+            type: 'Polygon',
+            coordinates: [updatedPoints.concat([updatedPoints[0]])],
+          },
+          properties: {},
+        });
+      } else {
+        setPolygonData(null);
+      }
+      return updatedPoints;
+    });
+  };
+
   return (
-    <Map
-      initialViewState={{
-        longitude: -74.219805,
-        latitude: -13.146554,
-        zoom: 14,
-      }}
-      attributionControl={false}
-      mapStyle="https://api.maptiler.com/maps/winter-v2-dark/style.json?key=qHY98vxGerd5lTUUPwyF"
-      onClick={handleMapClick}
-    >
-      {/* Control de navegación */}
-      <NavigationControl
-        position="bottom-right"
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          padding: "10px",
-          gap: "10px",
-          borderRadius: "15px"
+    <div className="relative w-full h-full">
+      <Button 
+        className='absolute top-4 left-4 z-10 bg-cyan-500 text-white px-4 py-2 rounded-md flex items-center'
+        onClick={handleButtonClick}
+      >
+        <span>Atrás</span>
+        <TbArrowBack size={20} />
+      </Button>
+      <ButtonSave></ButtonSave>
+
+      <Map
+        initialViewState={{
+          longitude: -74.219805,
+          latitude: -13.146554,
+          zoom: 14,
         }}
-      />
+        attributionControl={false}
+        mapStyle="https://api.maptiler.com/maps/openstreetmap/style.json?key=qHY98vxGerd5lTUUPwyF"
+        onClick={handleMapClick}
+        style={{ width: '100%', height: '100%' }}
+      >
+        <NavigationControl
+          position="bottom-right"
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            padding: "10px",
+            gap: "10px",
+            borderRadius: "15px",
+          }}
+        />
 
-      {/* Marcadores para cada punto */}
-      {points.map((point, index) => (
-        <Marker key={index} longitude={point[0]} latitude={point[1]} color="blue">
-          <TbPointFilled />
-        </Marker>
-      ))}
+        {points.map((point, index) => (
+          <Marker key={index} longitude={point[0]} latitude={point[1]} color="blue">
+            <TbPointFilled size={20} />
+          </Marker>
+        ))}
 
-      {/* Fuente y capa para dibujar el polígono */}
-      {polygonData && (
-        <Source id="polygon-source" type="geojson" data={polygonData}>
-          <Layer {...polygonLayer} />
-        </Source>
-      )}
-    </Map>
+        {polygonData && (
+          <Source id="polygon-source" type="geojson" data={polygonData}>
+            <Layer {...polygonLayer} />
+          </Source>
+        )}
+      </Map>
+    </div>
   );
 }
 
