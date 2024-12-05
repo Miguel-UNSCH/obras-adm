@@ -1,58 +1,96 @@
 "use client";
 
-import { FormProvider, useForm, Controller } from "react-hook-form"; 
-import { Input } from "@/components/ui/input"; 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Eye, EyeOff } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
+import toasterCustom from "@/components/toaster-custom";
+import { updateUser } from "@/actions/user-actions";
+import { updateUserSchema } from "@/utils/zod/schemas";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Eye, EyeOff } from "lucide-react";
+
+import { signOut } from "next-auth/react";
 
 type Session = {
+  user: {
   name: string;
   email: string;
-  role: string;
+  id: string;
+  user: string;
+  };
+  expires: string;
 };
 
 type CuentaContainerProps = {
   session: Session;
 };
 
-type FormData = {
-  name: string;
-  email: string;
-  role: string;
-  contrasenia: string;
-  nuevacontrasenia: string;
-  confirmarnuevacontrasenia: string; 
-};
-
 export function CuentaContainer({ session }: CuentaContainerProps) {
-  const form = useForm<FormData>({
-    defaultValues: {
-      name: session.name,
-      email: session.email,
-      role: session.role,
-    },
-  });
+
+  const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [showPassword, setShowPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
 
   const toggleShowPassword = () => setShowPassword(!showPassword);
   const toggleShowNewPassword = () => setShowNewPassword(!showNewPassword);
-  const toggleShowConfirmPassword = () => setShowConfirmPassword(!showConfirmPassword);
+  const toggleShowConfirmNewPassword = () => setShowConfirmNewPassword(!showConfirmNewPassword);
 
-  const onSubmit = async (data: FormData) => {
-    console.log("Datos enviados:", data);
-  };
+  const form = useForm<z.infer<typeof updateUserSchema>>({
+    resolver: zodResolver(updateUserSchema),
+    defaultValues: {
+      id: session.user.id,
+      name: session.user.name,
+      email: session.user.email || "",
+      user: session.user.user,
+      password: "",
+      newPassword: "",
+      confirmNewPassword: "",
+    },
+  });
+  
+  async function onSubmit(values: z.infer<typeof updateUserSchema>) {
+
+    toasterCustom(0);
+
+    const data = await updateUser(values);
+    
+    if (!data) {
+      toasterCustom(500, "Ocurrió un error inesperado");
+      return;
+    }
+
+    if (data.status === 200) {
+      toast.dismiss();
+      toasterCustom(data.status, data.message);
+      setIsSubmitting(false);
+      router.refresh();
+      setTimeout(() => {
+        signOut({ callbackUrl: "/" });
+      }, 2000);
+    } else {
+      toast.dismiss();
+      toasterCustom(data.status, data.message);
+      if (data.field) {
+        form.setError(data.field === 1 ? "password" : "confirmNewPassword", { type: "error", message: data.message });
+        form.setFocus(data.field === 1 ? "password" : "confirmNewPassword");
+      }
+      setIsSubmitting(false);
+    }
+  }
 
   return (
-    <FormProvider {...form}> 
+    <Form {...form}> 
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 max-w-md mx-auto p-4 w-full">
         <h2 className="text-2xl font-bold mb-4 text-center">Mi Cuenta</h2>
         
-        {/* Nombre */}
         <FormField
           control={form.control}
           name="name"
@@ -83,7 +121,7 @@ export function CuentaContainer({ session }: CuentaContainerProps) {
 
         <FormField
           control={form.control}
-          name="role"
+          name="user"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Usuario:</FormLabel>
@@ -97,22 +135,14 @@ export function CuentaContainer({ session }: CuentaContainerProps) {
 
         <FormField
           control={form.control}
-          name="contrasenia"
+          name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Contraseña:</FormLabel>
+              <FormLabel>Contraseña</FormLabel>
               <FormControl>
                 <div className="relative">
-                  <Input 
-                    type={showPassword ? "text" : "password"} 
-                    placeholder="****************" 
-                    {...field} 
-                  />
-                  <button 
-                    type="button" 
-                    onClick={toggleShowPassword} 
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                  >
+                  <Input type={showPassword ? "text" : "password"} placeholder="****************" {...field} disabled={isSubmitting} />
+                  <button type="button" onClick={toggleShowPassword} className="absolute inset-y-0 right-0 pr-3 flex items-center">
                     {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                   </button>
                 </div>
@@ -124,27 +154,14 @@ export function CuentaContainer({ session }: CuentaContainerProps) {
 
         <FormField
           control={form.control}
-          name="nuevacontrasenia"
-          rules={{
-            required: "La nueva contraseña es obligatoria",
-            validate: (value) =>
-              value === form.getValues("confirmarnuevacontrasenia") || "Las contraseñas no coinciden", // Validación de coincidencia
-          }}
+          name="newPassword"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Nueva Contraseña:</FormLabel>
+              <FormLabel>Nueva Contraseña</FormLabel>
               <FormControl>
                 <div className="relative">
-                  <Input 
-                    type={showNewPassword ? "text" : "password"} 
-                    placeholder="****************" 
-                    {...field} 
-                  />
-                  <button 
-                    type="button" 
-                    onClick={toggleShowNewPassword} 
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                  >
+                  <Input type={showNewPassword ? "text" : "password"} placeholder="****************" {...field} disabled={isSubmitting} />
+                  <button type="button" onClick={toggleShowNewPassword} className="absolute inset-y-0 right-0 pr-3 flex items-center">
                     {showNewPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                   </button>
                 </div>
@@ -156,28 +173,15 @@ export function CuentaContainer({ session }: CuentaContainerProps) {
 
         <FormField
           control={form.control}
-          name="confirmarnuevacontrasenia"
-          rules={{
-            required: "Confirmar la nueva contraseña es obligatorio",
-            validate: (value) =>
-              value === form.getValues("nuevacontrasenia") || "Las contraseñas no coinciden", // Validación de coincidencia
-          }}
+          name="confirmNewPassword"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Confirmar Nueva Contraseña:</FormLabel>
+              <FormLabel>Confirmar Nueva Contraseña</FormLabel>
               <FormControl>
                 <div className="relative">
-                  <Input 
-                    type={showConfirmPassword ? "text" : "password"} 
-                    placeholder="****************" 
-                    {...field} 
-                  />
-                  <button 
-                    type="button" 
-                    onClick={toggleShowConfirmPassword} 
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                  >
-                    {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  <Input type={showConfirmNewPassword ? "text" : "password"} placeholder="****************" {...field} disabled={isSubmitting} />
+                  <button type="button" onClick={toggleShowConfirmNewPassword} className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                    {showConfirmNewPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                   </button>
                 </div>
               </FormControl>
@@ -187,10 +191,13 @@ export function CuentaContainer({ session }: CuentaContainerProps) {
         />
 
         <div className="flex justify-center py-3">
-          <Button type="submit">Actualizar</Button>
+          <Button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? "Actualizando..." : "Actualizar Datos"}
+          </Button>
         </div>
+
       </form>
-    </FormProvider>
+    </Form>
   );
 }
 

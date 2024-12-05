@@ -1,15 +1,30 @@
 "use client";
 
+import { useEffect, useState } from 'react';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import Map, { Marker, NavigationControl, Source, Layer } from 'react-map-gl/maplibre';
 import { Feature, Polygon } from 'geojson';
-// import { FillLayer } from 'maplibre-gl';
+import { useRouter } from 'next/navigation';
+import { FaMapMarkerAlt } from "react-icons/fa";
+import { Button } from '../ui/button';
 
 function CustomMap() {
-  // Define los datos del polígono
+  const [isClient, setIsClient] = useState(false);
+  const router = useRouter();
+
+  const [isActive, setIsActive] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) {
+    return null;
+  }
+
   const polygonData: Feature<Polygon> = {
     type: 'Feature',
-    properties: {}, // Añade propiedades, aunque estén vacías
+    properties: {},
     geometry: {
       type: 'Polygon',
       coordinates: [
@@ -42,47 +57,100 @@ function CustomMap() {
     },
   };
 
-  // Define el estilo del polígono
-  const polygonLayer = {
-    id: 'polygon-layer',
-    type: 'fill', // Literal específico
+  const polygonData1: Feature<Polygon> = {
+    type: 'Feature',
+    properties: {},
+    geometry: {
+      type: 'Polygon',
+      coordinates: [
+        [
+          [-74.206840, -13.162083],
+          [-74.205835, -13.159642],
+          [-74.201010, -13.160051],
+          [-74.201484, -13.161868],
+          [-74.203057, -13.162084],
+        ],
+      ],
+    },
+  };
+
+  const polygonLayer1 = {
+    id: 'polygon-layer-1',
+    type: 'fill',
     paint: {
-      'fill-color': '#088ff5', // Color de relleno
-      'fill-opacity': 0.3,   // Opacidad del relleno
+      'fill-color': '#088ff5',
+      'fill-opacity': 0.3,
     },
   } as const;
+
+  const polygonLayer2 = {
+    id: 'polygon-layer-2',
+    type: 'fill',
+    paint: {
+      'fill-color': '#ff6347',
+      'fill-opacity': 0.3,
+    },
+  } as const;
+
+  const handleMarkerClick = () => {
+    setIsActive(true)
+  };
+
 
   return (
     <Map
       initialViewState={{
-        longitude: -74.219805, // Centra el mapa en el polígono
-        latitude: -13.146554,
-        zoom: 14,
+        longitude: -74.213586,
+        latitude: -13.166720,
+        zoom: 13,
       }}
       attributionControl={false}
-      mapStyle="https://api.maptiler.com/maps/hybrid/style.json?key=qHY98vxGerd5lTUUPwyF"
+      mapStyle="https://api.maptiler.com/maps/topo-v2/style.json?key=qHY98vxGerd5lTUUPwyF"
     >
-      {/* Control de navegación */}
-      <NavigationControl position="bottom-right" style={{
-        display: "flex",
-        flexDirection: "column",
-        padding: "10px",
-        gap: "10px",
-        borderRadius: "15px"
-      }}/>
-
-      {/* Marcador */}
-      <Marker 
-        longitude={-74.219805}
-        latitude={-13.146554}
-        color="red"
-        
+      <NavigationControl
+        position="bottom-right"
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          padding: "10px",
+          gap: "10px",
+          borderRadius: "15px",
+        }}
       />
 
-      {/* Fuente de datos para el polígono */}
+      <Marker
+        longitude={-74.220767}
+        latitude={-13.146605}
+        onClick={handleMarkerClick}
+      >
+        <FaMapMarkerAlt className='text-[#FF0000] text-4xl'/>
+        <div className={`absolute top-0 left-0 ${isActive? 'block': 'hidden'}`}>
+          <p>TITULO: OBRAS N1</p>
+          <br />
+          <Button>Detalles</Button>
+        </div>
+      </Marker>
+
+
+      <Marker
+        longitude={-74.204258}
+        latitude={-13.160892}
+        onClick={handleMarkerClick}
+      >
+        <FaMapMarkerAlt className='text-[#FF0000] text-4xl'/>
+        <div className={`absolute top-0 left-0 ${isActive? 'block': 'hidden'}`}>
+          <p>TITULO: OBRAS N2</p>
+          <br />
+          <Button>Detalles</Button>
+        </div>
+      </Marker>
+
       <Source id="polygon-source" type="geojson" data={polygonData}>
-        {/* Capa para dibujar el polígono */}
-        <Layer {...polygonLayer} />
+        <Layer {...polygonLayer1} />
+      </Source>
+
+      <Source id="polygon-source1" type="geojson" data={polygonData1}>
+        <Layer {...polygonLayer2} />
       </Source>
     </Map>
   );
