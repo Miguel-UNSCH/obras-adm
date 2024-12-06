@@ -3,8 +3,7 @@ import MapCustom from "@/components/views/map-custom";
 import MapDrawingPolygon from "@/components/views/map-drawing-polygon";
 
 
-function Page() {
-
+async function Page() {
 
   return (
     <div className="h-full grid gap-4 grid-cols-1 md:grid-cols-2 md:grid-rows-2">
