@@ -61,7 +61,7 @@ export default function SignIn({ onSubmit, serverError, status }: { onSubmit: (v
           {showServerError && (
             <Alert variant={status === 200 ? 'default' : 'destructive'} className="mb-6">
               <AlertDescription 
-                className={`flex items-center gap-4 ${status === 200 ? 'text-primary' : ''}`}
+                className={`flex items-center gap-4 ${status === 200 ? 'text-[#22C55E]' : 'text-primary'}`}
               >
                 <OctagonAlert />
                 <span>{serverError}</span>

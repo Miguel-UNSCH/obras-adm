@@ -1,11 +1,11 @@
 import React from 'react';
 
 interface Obra {
-  id: string;
   tipo_proyecto: string;
-  abreviatura: string;
   nombre: string;
   codigo_CUI: string;
+  propietario_id: string;
+  nombre_completo: string;
 }
 
 const ObraCard: React.FC<{ obra: Obra }> = ({ obra }) => {
@@ -18,7 +18,7 @@ const ObraCard: React.FC<{ obra: Obra }> = ({ obra }) => {
         {obra.nombre}
       </p>
       <span className="text-sm text-gray-400">
-        Proyecto: {obra.tipo_proyecto}
+        Residente: {obra.nombre_completo}
       </span>
     </div>
   );

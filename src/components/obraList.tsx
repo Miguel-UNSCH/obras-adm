@@ -2,11 +2,11 @@ import React from 'react';
 import ObraCard from './ObraCard';
 
 interface Obra {
-  id: string;
   tipo_proyecto: string;
-  abreviatura: string;
   nombre: string;
   codigo_CUI: string;
+  propietario_id: string;
+  nombre_completo: string;
 }
 
 const ObraList: React.FC<{ obras: Obra[] }> = ({ obras }) => {

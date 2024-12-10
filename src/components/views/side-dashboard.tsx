@@ -3,21 +3,14 @@
 import { useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import ObraList from "@/components/obraList";
 
 interface Obra {
-  id: string;
   tipo_proyecto: string;
-  abreviatura: string;
   nombre: string;
   codigo_CUI: string;
+  propietario_id: string;
+  nombre_completo: string;
 }
 
 type obrasProsp = {
@@ -25,7 +18,6 @@ type obrasProsp = {
 }
 
 function SideDashboard({ obrasT }: obrasProsp) {
-  const [selectValue, setSelectValue] = useState<string | undefined>("");
   const [searchValue, setSearchValue] = useState("");
   const [filteredObras, setFilteredObras] = useState<Obra[]>(obrasT);
 
@@ -35,14 +27,13 @@ function SideDashboard({ obrasT }: obrasProsp) {
     const searchTerm = searchValue.toLowerCase();
 
     const filtered = obrasT.filter((obra) => {
-      const matchesSelect = selectValue ? obra.tipo_proyecto === selectValue : true;
 
       const matchesSearch = 
         obra.nombre.toLowerCase().includes(searchTerm) || 
-        obra.abreviatura.toLowerCase().includes(searchTerm) || 
-        obra.codigo_CUI.includes(searchTerm);
+        obra.codigo_CUI.toLowerCase().includes(searchTerm) || 
+        obra.nombre_completo.toLowerCase().includes(searchTerm);
 
-      return matchesSelect && matchesSearch;
+      return matchesSearch;
     });
 
     setFilteredObras(filtered);
@@ -50,23 +41,13 @@ function SideDashboard({ obrasT }: obrasProsp) {
 
   return (
     <div className="flex flex-col gap-4 h-full w-full">
-      <div className="text-center text-transparent bg-gradient-to-r text-slate-800 dark:text-white bg-clip-text font-extrabold text-4xl">
-        <span>Obras</span>
+      <div className="text-center text-transparent bg-gradient-to-r text-red-600 dark:text-white bg-clip-text font-extrabold text-4xl">
+        <span>Obras por administración directa</span>
       </div>
 
       <form onSubmit={handleSearch} className="flex flex-col gap-4">
-        <Select value={selectValue} onValueChange={setSelectValue}>
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="Seleccionar" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="OAD">Obras por administración directa</SelectItem>
-            <SelectItem value="OC">Obras por contrata</SelectItem>
-          </SelectContent>
-        </Select>
-
         <Input
-          placeholder="Buscar por descripción, abreviatura o código CUI"
+          placeholder="Buscar por código CUI, descripción o residente"
           value={searchValue}
           onChange={(e) => setSearchValue(e.target.value)}
         />
@@ -75,7 +56,6 @@ function SideDashboard({ obrasT }: obrasProsp) {
       </form>
 
       <div className="flex md:flex-col gap-4 overflow-auto">
-        <h1 className="text-2xl font-semibold mb-4">Lista de Obras</h1>
         <ObraList obras={filteredObras} />
       </div>
     </div>

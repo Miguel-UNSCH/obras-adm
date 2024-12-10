@@ -44,3 +44,11 @@ model VerificationToken {
 
   @@unique([identifier, token])
 }
+
+model Coordinates {
+  id          String     @id @default(cuid())
+  cui         String
+  latitude    String?
+  longitude   String?
+  area        String?
+}
