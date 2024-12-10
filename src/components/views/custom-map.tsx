@@ -5,6 +5,15 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import Map, { NavigationControl } from 'react-map-gl/maplibre';
 import LocationObras from './location-works';
 
+interface Obras {
+  tipo_proyecto: string;
+  nombre: string;
+  codigo_CUI: string;
+  propietario_id: string;
+  nombre_completo: string;
+  coordinates: number[][];
+}
+
 interface UserLocation {
   latitude: number;
   longitude: number;
@@ -58,10 +67,25 @@ const obra1 = {
   ],
 };
 
+const obra2 = {
+  tipo_proyecto: 'SA',
+  nombre: 'MEJORAMIENTO DEL SISTEMA HIDRAULICO CACHI EN LA REGION AYACUCHO',
+  codigo_CUI: '2318421',
+  propietario_id: '43962789',
+  nombre_completo: 'Aldahir Kenedin Ubilluz',
+  coordinates: [
+    [-74.227160657484, -13.158315560785368],
+    [-74.22763671949019, -13.160544218402535],
+    [-74.22532964976827, -13.161150409767146],
+    [-74.2247437272994, -13.158903928365334]
+  ],
+};
+
+const obraT = [obra0, obra1, obra2]
+
 function CustomMap() {
   const [userLocation, setUserLocation] = useState<UserLocation | null>(null);
   const [isClient, setIsClient] = useState(false);
-
   useEffect(() => {
     setIsClient(true);
     navigator.geolocation.getCurrentPosition(
@@ -99,8 +123,9 @@ function CustomMap() {
           borderRadius: '15px',
         }}
       />
-      <LocationObras obra={obra0} />
-      <LocationObras obra={obra1} />
+      {obraT.map((obra, index) => (
+        <LocationObras key={index} obra={obra} />
+      ))}
     </Map>
   );
 }

@@ -64,6 +64,10 @@ const LocationObras: React.FC<{ obra: Obra }> = ({ obra }) => {
     setShowDetails(false);
   };
 
+  const handleDetails = () => {
+    console.log("Detalles");
+  }; 
+
   return (
     <>
       <Marker
@@ -75,7 +79,7 @@ const LocationObras: React.FC<{ obra: Obra }> = ({ obra }) => {
         <FaMapMarkerAlt className="text-[#FF0000] text-4xl" />
         <div className={`absolute top-0 left-0 ${selectedMarker === 'marker' && showDetails ? 'block' : 'hidden'}`}>
           <div className="bg-gradient-to-r from-gray-900 to-black text-white p-4 rounded-lg shadow-lg w-max-6x1 w-[300px] mx-auto text-justify">
-            <h2 className="text-[14px] font-extrabold mb-4 text-center">Detalles del Proyecto</h2>
+            <h2 className="text-[14px] font-extrabold mb-4 text-center">Detalles de la obra</h2>
             <div className="space-y-3">
               <div>
                 <strong className="text-[13px]">CUI:</strong> <span className="text-[12px] text-gray-200">{obra.codigo_CUI}</span>
@@ -93,9 +97,14 @@ const LocationObras: React.FC<{ obra: Obra }> = ({ obra }) => {
                 <strong className="text-[13px]">Residente:</strong> <span className="text-[12px] text-gray-200">{obra.nombre_completo}</span>
               </div>
             </div>
-            <Button className="mx-auto block" onClick={handleCloseDetails}>
-              Cerrar
-            </Button>
+            <div className='flex flex-row p-3'>
+              <Button className="mx-auto block" onClick={handleCloseDetails}>
+                Cerrar
+              </Button>
+              <Button className="mx-auto block"  onClick={handleDetails}>
+                Detalles
+              </Button>
+            </div>
           </div>
         </div>
       </Marker>

@@ -5,15 +5,16 @@ import Map, { Marker, NavigationControl, Source, Layer, MapLayerMouseEvent } fro
 import { useState, useCallback, useEffect } from 'react';
 import { Feature, Polygon } from 'geojson';
 import { TbPointFilled } from "react-icons/tb";
-import ButtonSave from '../ui/icons-save';
-import ButtonBack from '../ui/icons-back';
+import ButtonSave from '@/components/ui/icons-save';
+import ButtonBack from '@/components/ui/icons-back';
 
 interface UserLocation {
   latitude: number;
   longitude: number;
 }
 
-function MapDrawingPolygon() {
+function NewCoordinates() {
+
   const [userLocation, setUserLocation] = useState<UserLocation | null>(null);
   const [isClient, setIsClient] = useState(false);
   const [points, setPoints] = useState<[number, number][]>([]);
@@ -133,4 +134,4 @@ function MapDrawingPolygon() {
   );
 }
 
-export default MapDrawingPolygon;
+export default NewCoordinates;

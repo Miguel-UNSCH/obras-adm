@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import ObraList from "@/components/obraList";
+import ObraCard from "../obraCard";
 
 interface Obra {
   tipo_proyecto: string;
@@ -23,14 +23,12 @@ function SideDashboard({ obrasT }: obrasProsp) {
 
   const handleSearch = (event: React.FormEvent) => {
     event.preventDefault();
-
     const searchTerm = searchValue.toLowerCase();
 
     const filtered = obrasT.filter((obra) => {
-
-      const matchesSearch = 
-        obra.nombre.toLowerCase().includes(searchTerm) || 
-        obra.codigo_CUI.toLowerCase().includes(searchTerm) || 
+      const matchesSearch =
+        obra.nombre.toLowerCase().includes(searchTerm) ||
+        obra.codigo_CUI.toLowerCase().includes(searchTerm) ||
         obra.nombre_completo.toLowerCase().includes(searchTerm);
 
       return matchesSearch;
@@ -56,7 +54,15 @@ function SideDashboard({ obrasT }: obrasProsp) {
       </form>
 
       <div className="flex md:flex-col gap-4 overflow-auto">
-        <ObraList obras={filteredObras} />
+        <div className="space-y-4">
+          {filteredObras.length > 0 ? (
+            filteredObras.map((obra, index) => (
+              <ObraCard key={index} obra={obra} />
+            ))
+          ) : (
+            <p>No se encontraron resultados para tu búsqueda.</p>
+          )}
+        </div>
       </div>
     </div>
   );
