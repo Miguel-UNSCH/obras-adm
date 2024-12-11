@@ -1,11 +1,8 @@
-"use client";
-
 import 'maplibre-gl/dist/maplibre-gl.css';
 import Map, { Marker, NavigationControl, Source, Layer, MapLayerMouseEvent } from 'react-map-gl/maplibre';
 import { useState, useCallback, useEffect } from 'react';
 import { Feature, Polygon } from 'geojson';
 import { TbPointFilled } from "react-icons/tb";
-import ButtonSave from '@/components/ui/icons-save';
 import ButtonBack from '@/components/ui/icons-back';
 
 interface UserLocation {
@@ -13,17 +10,24 @@ interface UserLocation {
   longitude: number;
 }
 
-function NewCoordinates() {
+interface NewCoordinatesProps {
+  points: [number, number][]; 
+  setPoints: React.Dispatch<React.SetStateAction<[number, number][]>>;
+}
 
+function NewCoordinates({ points, setPoints }: NewCoordinatesProps) {
   const [userLocation, setUserLocation] = useState<UserLocation | null>(null);
-  const [isClient, setIsClient] = useState(false);
-  const [points, setPoints] = useState<[number, number][]>([]);
   const [polygonData, setPolygonData] = useState<Feature<Polygon> | null>(null);
+  const [locationError, setLocationError] = useState<string | null>(null);
+  const [geoPermissionDenied, setGeoPermissionDenied] = useState(false);
+  const [defaultLocation] = useState<UserLocation>({ latitude: -13.160441, longitude: -74.225832 });
+
+  const [localPoints, setLocalPoints] = useState<[number, number][]>(points);
 
   const handleMapClick = useCallback((event: MapLayerMouseEvent) => {
     const { lng, lat } = event.lngLat;
-    setPoints((prevPoints) => {
-      const newPoints = [...prevPoints, [lng, lat] as [number, number]];
+    setLocalPoints((prevPoints) => {
+      const newPoints: [number, number][] = [...prevPoints, [lng, lat]];
       if (newPoints.length >= 3) {
         setPolygonData({
           type: 'Feature',
@@ -38,17 +42,21 @@ function NewCoordinates() {
     });
   }, []);
 
+  useEffect(() => {
+    setPoints(localPoints);
+  }, [localPoints, setPoints]);
+
   const polygonLayer = {
     id: 'polygon-layer',
-    type: 'fill',
+    type: 'fill' as const,
     paint: {
       'fill-color': '#088ff5',
       'fill-opacity': 0.3,
     },
-  } as const;
+  };
 
   const handleButtonClick = () => {
-    setPoints((prevPoints) => {
+    setLocalPoints((prevPoints) => {
       const updatedPoints = prevPoints.slice(0, -1);
       if (updatedPoints.length >= 3) {
         setPolygonData({
@@ -66,42 +74,83 @@ function NewCoordinates() {
     });
   };
 
-  useEffect(() => {
-    setIsClient(true);
+  const requestLocation = useCallback(() => {
+    if (!navigator.geolocation) {
+      setLocationError('La geolocalización no es soportada por este navegador');
+      return;
+    }
+
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
         setUserLocation({ latitude, longitude });
+        setLocationError(null);
       },
       (error) => {
-        console.error('Error obteniendo la ubicación', error);
-      }
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            setLocationError('El usuario denegó el permiso de geolocalización');
+            setGeoPermissionDenied(true);
+            break;
+          case error.POSITION_UNAVAILABLE:
+            setLocationError('La posición geográfica no está disponible');
+            break;
+          case error.TIMEOUT:
+            setLocationError('La solicitud de geolocalización ha superado el tiempo de espera');
+            break;
+          default:
+            setLocationError('Error desconocido al obtener la ubicación');
+        }
+      },
+      { timeout: 5000 }
     );
   }, []);
 
-  if (!isClient || !userLocation) {
-    return null;
-  }
+  useEffect(() => {
+    requestLocation();
 
-  const handleSaveClick = () => {
-    console.log(points);
+    const timeoutId = setTimeout(() => {
+      if (!userLocation) {
+        setUserLocation(defaultLocation);
+      }
+    }, 5000);
+
+    return () => clearTimeout(timeoutId);
+  }, [userLocation, requestLocation]);
+
+  const retryLocationRequest = () => {
+    setGeoPermissionDenied(false);
+    setLocationError(null);
+    requestLocation();
   };
+
+  if (!userLocation) {
+    return (
+      <div className='p-4'>
+        {locationError ? (
+          <div>
+            <p>{locationError}</p>
+            {geoPermissionDenied && (
+              <button onClick={retryLocationRequest} className="text-blue-600">Intentar de nuevo</button>
+            )}
+          </div>
+        ) : (
+          <p>Esperando la ubicación del usuario...</p>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div className="relative w-full h-full">
-
       <div className='absolute top-4 left-4 z-10'>
-        <ButtonBack onClick={handleButtonClick}/>
+        <ButtonBack onClick={handleButtonClick} />
       </div>
 
-      
-      <div className="absolute top-4 right-4 z-10">
-        <ButtonSave onClick={handleSaveClick} />
-      </div>
       <Map
         initialViewState={{
-          longitude: userLocation.longitude,
-          latitude: userLocation.latitude,
+          longitude: -74.225832,
+          latitude: -13.160441,
           zoom: 13,
         }}
         attributionControl={false}
@@ -119,7 +168,7 @@ function NewCoordinates() {
             borderRadius: "15px",
           }}
         />
-        {points.map((point, index) => (
+        {localPoints.map((point, index) => (
           <Marker key={index} longitude={point[0]} latitude={point[1]} color="blue">
             <TbPointFilled size={20} />
           </Marker>

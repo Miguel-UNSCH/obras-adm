@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
-import ObraCard from "../obraCard";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import ObraCard from "@/components/obraCard";
 
 interface Obra {
   tipo_proyecto: string;
@@ -12,6 +12,7 @@ interface Obra {
   propietario_id: string;
   nombre_completo: string;
 }
+
 
 type obrasProsp = {
   obrasT: Obra[];
@@ -39,7 +40,7 @@ function SideDashboard({ obrasT }: obrasProsp) {
 
   return (
     <div className="flex flex-col gap-4 h-full w-full">
-      <div className="text-center text-transparent bg-gradient-to-r text-red-600 dark:text-white bg-clip-text font-extrabold text-4xl">
+      <div className="text-center  text-red-500 dark:text-white bg-clip-text font-extrabold text-4xl">
         <span>Obras por administración directa</span>
       </div>
 

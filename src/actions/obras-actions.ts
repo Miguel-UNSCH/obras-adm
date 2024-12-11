@@ -26,3 +26,24 @@ export async function getObras() {
     return [];
   }
 }
+
+export async function getProyectos() {
+  try {
+    const result = await query(
+      `SELECT
+        app.nombre
+      FROM public."archivoProject_proyecto" app
+      INNER JOIN public."archivoProject_archivo" apa
+        ON app.id = apa.nombre_proyecto_id
+      INNER JOIN public."archivoProject_usuario" apu 
+        ON apa.propietario_id = apu.dni 
+      WHERE apu.rol = '2';
+      `,
+      []
+    );
+    return result;
+  } catch (error) {
+    console.error("Error al obtener las obras: ", error);
+    return [];
+  }
+}

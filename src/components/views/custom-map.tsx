@@ -81,33 +81,77 @@ const obra2 = {
   ],
 };
 
-const obraT = [obra0, obra1, obra2]
+const obraT = [obra0, obra1, obra2];
 
 function CustomMap() {
   const [userLocation, setUserLocation] = useState<UserLocation | null>(null);
   const [isClient, setIsClient] = useState(false);
-  useEffect(() => {
-    setIsClient(true);
+  const [locationError, setLocationError] = useState<string | null>(null);
+  const [defaultLocation] = useState<UserLocation>({ latitude: -13.160441, longitude: -74.225832 });
+
+  const requestLocation = () => {
+    if (!navigator.geolocation) {
+      setLocationError('La geolocalización no es soportada por este navegador');
+      return;
+    }
+
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
         setUserLocation({ latitude, longitude });
+        setLocationError(null);
       },
       (error) => {
-        console.error('Error obteniendo la ubicación', error);
-      }
+        if (error.code === 1) {
+          setLocationError('El usuario denegó el permiso de geolocalización');
+        } else if (error.code === 2) {
+          setLocationError('La posición geográfica no está disponible');
+        } else if (error.code === 3) {
+          setLocationError('La solicitud de geolocalización ha superado el tiempo de espera');
+        }
+      },
+      { timeout: 10000 }
     );
-  }, []);
+  };
+
+  useEffect(() => {
+    setIsClient(true);
+
+    const timeoutId = setTimeout(() => {
+      if (!userLocation) {
+        setUserLocation(defaultLocation);
+      }
+    }, 5000);
+
+    requestLocation();
+
+    return () => clearTimeout(timeoutId);
+  }, [userLocation]);
+
+  const retryLocationRequest = () => {
+    requestLocation();
+  };
 
   if (!isClient || !userLocation) {
-    return null;
+    return (
+      <div>
+        {locationError ? (
+          <div>
+            <p>{locationError}</p>
+            <button onClick={retryLocationRequest}>Intentar de nuevo</button>
+          </div>
+        ) : (
+          <p>Esperando la ubicación del usuario...</p>
+        )}
+      </div>
+    );
   }
 
   return (
     <Map
       initialViewState={{
-        longitude: userLocation.longitude,
-        latitude: userLocation.latitude,
+        longitude: userLocation ? userLocation.longitude : defaultLocation.longitude,
+        latitude: userLocation ? userLocation.latitude : defaultLocation.latitude,
         zoom: 13,
       }}
       attributionControl={false}
