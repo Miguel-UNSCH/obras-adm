@@ -3,6 +3,10 @@ import { useState } from 'react';
 import { FaMapMarkerAlt } from 'react-icons/fa';
 import { Marker, Source, Layer } from 'react-map-gl/maplibre';
 import { Button } from '@/components/ui/button';
+import Link from 'next/link';
+import { useRouter } from 'next/router'; // Asegúrate de importar useRouter
+
+
 
 interface Obra {
   tipo_proyecto: string;
@@ -63,10 +67,6 @@ const LocationObras: React.FC<{ obra: Obra }> = ({ obra }) => {
     setShowDetails(false);
   };
 
-  const handleDetails = () => {
-    console.log("Hola");
-  }; 
-
   return (
     <>
       <Marker
@@ -76,7 +76,7 @@ const LocationObras: React.FC<{ obra: Obra }> = ({ obra }) => {
         onClick={handleMarkerClick}
       >
         <div className="relative">
-          <FaMapMarkerAlt className="text-[#FF0000] text-4xl z-0" /> {/* z-index ajustado */}
+          <FaMapMarkerAlt className="text-[#FF0000] text-4xl z-0" />
           <div
             className={`absolute top-0 left-0 ${selectedMarker === 'marker' && showDetails ? 'block' : 'hidden'} z-50`}
           >
@@ -103,21 +103,25 @@ const LocationObras: React.FC<{ obra: Obra }> = ({ obra }) => {
                 <Button className="mx-auto block" onClick={handleCloseDetails}>
                   Cerrar
                 </Button>
-                <Button className="mx-auto block" onClick={handleDetails}>
+                <Link
+                  href={`/dashboard/detalles/${obra.codigo_CUI}`}
+                  className="mx-auto px-4 py-3 bg-green-400 text-center items-center rounded-[10px] hover:bg-green-600 transition-colors duration-300"
+                >
                   Detalles
-                </Button>
+                </Link>
+
               </div>
             </div>
           </div>
         </div>
       </Marker>
-  
+
       <Source id={`source-${obra.propietario_id}`} type="geojson" data={polygonData}>
         <Layer {...polygonLayer} />
       </Source>
     </>
   );
-    
+
 };
 
 export default LocationObras;

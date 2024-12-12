@@ -4,34 +4,47 @@ import NewCoordinates from "@/components/views/register-Location";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState } from "react";
 import ButtonSave from "@/components/ui/icons-save";
+import { guardarObra } from "@/actions/obras-actions";
+
+interface ObrasProps {
+  nombre: string;
+  codigo_CUI: string;
+}
 
 interface OptionProps {
   value: string;
   label: string;
 }
 
-interface ObrasContainerProps {
-  options: OptionProps[];
+type ObrasContainerProps = {
+  obras: ObrasProps[];
 }
 
-function ObrasContainer({ options }: ObrasContainerProps) {
+function ObrasContainer({ obras }: ObrasContainerProps) {
+
   const [selectedOption, setSelectedOption] = useState<string>("");
   const [points, setPoints] = useState<[number, number][]>([]);
 
-
+  const options: OptionProps[] = obras.map((obra) => ({
+    value: obra.nombre,
+    label: obra.nombre,
+  }));
+  
   const handleSelectChange = (value: string) => {
     setSelectedOption(value);
   };
 
-  const handleSaveClick = () => {
+  const handleSaveClick = async () => {
     if (!selectedOption) {
       console.log("Por favor, selecciona una opción.");
+    } else if (points.length < 3) {
+      console.log("Se necesita más de 3 puntos", points.length);
     } else {
-      if (points.length < 3) {
-        console.log("Se necesita más de 3 puntos", points.length);
-      } else {
-        console.log("Valor seleccionado:", selectedOption);
-        console.log("Puntos guardados:", points);
+      try {
+        await guardarObra(selectedOption);
+        console.log("Datos guardados correctamente.");
+      } catch (error) {
+        console.error("Error al guardar los datos:", error);
       }
     }
   };

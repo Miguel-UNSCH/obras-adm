@@ -31,7 +31,8 @@ export async function getProyectos() {
   try {
     const result = await query(
       `SELECT
-        app.nombre
+        app.nombre,
+        app."codigo_CUI"
       FROM public."archivoProject_proyecto" app
       INNER JOIN public."archivoProject_archivo" apa
         ON app.id = apa.nombre_proyecto_id
@@ -46,4 +47,17 @@ export async function getProyectos() {
     console.error("Error al obtener las obras: ", error);
     return [];
   }
+}
+
+export async function guardarObra(selectedOption: string) {
+
+  try {
+    console.log('Cargo guardado con éxito');
+    return { success: true, message: 'Cargo guardado con éxito' };
+
+  } catch (error) {
+    console.error('Error al guardar el cargo:', error);
+    return { success: false, message: 'Error al guardar el cargo', error };
+  }
+  
 }

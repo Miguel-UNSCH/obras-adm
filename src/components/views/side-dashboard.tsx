@@ -13,7 +13,6 @@ interface Obra {
   nombre_completo: string;
 }
 
-
 type obrasProsp = {
   obrasT: Obra[];
 }
