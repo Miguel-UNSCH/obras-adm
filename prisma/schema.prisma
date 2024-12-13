@@ -48,7 +48,7 @@ model VerificationToken {
 model Coordinates {
   id          String     @id @default(cuid())
   cui         String
-  nombre      String        // Nombre de la obra
+  nombre      String
   latitude    String
   longitude   String
   area        String?

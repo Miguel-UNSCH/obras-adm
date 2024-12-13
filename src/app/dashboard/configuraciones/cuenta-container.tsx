@@ -18,10 +18,10 @@ import { signOut } from "next-auth/react";
 
 type Session = {
   user: {
-  name: string;
-  email: string;
-  id: string;
-  user: string;
+    name: string;
+    email: string;
+    id: string;
+    user: string;
   };
   expires: string;
 };
@@ -55,13 +55,13 @@ export function CuentaContainer({ session }: CuentaContainerProps) {
       confirmNewPassword: "",
     },
   });
-  
+
   async function onSubmit(values: z.infer<typeof updateUserSchema>) {
 
     toasterCustom(0);
 
     const data = await updateUser(values);
-    
+
     if (!data) {
       toasterCustom(500, "Ocurrió un error inesperado");
       return;
@@ -87,10 +87,10 @@ export function CuentaContainer({ session }: CuentaContainerProps) {
   }
 
   return (
-    <Form {...form}> 
+    <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 max-w-md mx-auto p-4 w-full">
         <h2 className="text-2xl font-bold mb-4 text-center">Mi Cuenta</h2>
-        
+
         <FormField
           control={form.control}
           name="name"
@@ -98,7 +98,7 @@ export function CuentaContainer({ session }: CuentaContainerProps) {
             <FormItem>
               <FormLabel>Nombre:</FormLabel>
               <FormControl>
-                <Input placeholder="Administrador" {...field} disabled/>
+                <Input placeholder="Administrador" {...field} disabled />
               </FormControl>
               <FormMessage className="text-end" />
             </FormItem>
@@ -112,7 +112,7 @@ export function CuentaContainer({ session }: CuentaContainerProps) {
             <FormItem>
               <FormLabel>Correo Electrónico:</FormLabel>
               <FormControl>
-                <Input placeholder="admin@admin.com" {...field} disabled/>
+                <Input placeholder="admin@admin.com" {...field} disabled />
               </FormControl>
               <FormMessage className="text-end" />
             </FormItem>
@@ -126,7 +126,7 @@ export function CuentaContainer({ session }: CuentaContainerProps) {
             <FormItem>
               <FormLabel>Usuario:</FormLabel>
               <FormControl>
-                <Input placeholder="Admin" {...field} disabled/>
+                <Input placeholder="Admin" {...field} disabled />
               </FormControl>
               <FormMessage className="text-end" />
             </FormItem>

@@ -29,6 +29,16 @@ CREATE TABLE "VerificationToken" (
     "expires" DATETIME NOT NULL
 );
 
+-- CreateTable
+CREATE TABLE "Coordinates" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "cui" TEXT NOT NULL,
+    "nombre" TEXT NOT NULL,
+    "latitude" TEXT NOT NULL,
+    "longitude" TEXT NOT NULL,
+    "area" TEXT
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
