@@ -5,10 +5,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useState } from "react";
 import ButtonSave from "@/components/ui/icons-save";
 import { guardarObra } from "@/actions/obras-actions";
+import * as turf from '@turf/turf';
 
 interface ObrasProps {
   nombre: string;
   codigo_CUI: string;
+  nombre_completo: string;
 }
 
 interface OptionProps {
@@ -18,10 +20,9 @@ interface OptionProps {
 
 type ObrasContainerProps = {
   obras: ObrasProps[];
-}
+};
 
 function ObrasContainer({ obras }: ObrasContainerProps) {
-
   const [selectedOption, setSelectedOption] = useState<string>("");
   const [points, setPoints] = useState<[number, number][]>([]);
 
@@ -29,7 +30,7 @@ function ObrasContainer({ obras }: ObrasContainerProps) {
     value: obra.nombre,
     label: obra.nombre,
   }));
-  
+
   const handleSelectChange = (value: string) => {
     setSelectedOption(value);
   };
@@ -37,17 +38,46 @@ function ObrasContainer({ obras }: ObrasContainerProps) {
   const handleSaveClick = async () => {
     if (!selectedOption) {
       console.log("Por favor, selecciona una opción.");
-    } else if (points.length < 3) {
-      console.log("Se necesita más de 3 puntos", points.length);
-    } else {
-      try {
-        await guardarObra(selectedOption);
-        console.log("Datos guardados correctamente.");
-      } catch (error) {
-        console.error("Error al guardar los datos:", error);
-      }
+      return;
+    }
+
+    if (points.length < 3) {
+      console.log("Se necesitan al menos 3 puntos", points.length);
+      return;
+    }
+
+    const coordinates = [...points];
+    if (
+      coordinates[0][0] !== coordinates[coordinates.length - 1][0] ||
+      coordinates[0][1] !== coordinates[coordinates.length - 1][1]
+    ) {
+      coordinates.push(coordinates[0]);
+    }
+
+    const polygon = turf.polygon([coordinates]);
+    const area = turf.area(polygon);
+    const obraSeleccionada = obras.find((obra) => obra.nombre === selectedOption);
+    if (!obraSeleccionada) {
+      console.error("No se encontró la obra seleccionada.");
+      return;
+    }
+
+    try {
+      const projectType = "Carretera";
+      await guardarObra(
+        obraSeleccionada.nombre_completo,
+        projectType,
+        obraSeleccionada.codigo_CUI,
+        selectedOption,
+        coordinates,
+        area.toFixed(2)
+      );
+      console.log("Datos guardados correctamente.");
+    } catch (error) {
+      console.error("Error al guardar los datos:", error);
     }
   };
+
 
   return (
     <div className="space-y-6">

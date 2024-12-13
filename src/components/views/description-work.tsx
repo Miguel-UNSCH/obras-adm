@@ -17,7 +17,7 @@ const DescriptionWork: React.FC<{ obra: Obra }> = ({ obra }) => {
     }
 
     const polygon = turf.polygon([coordinates]);
-    const area = turf.area(polygon);  // El área se calcula en metros cuadrados por defecto
+    const area = turf.area(polygon);
 
     return (
         <div className="p-6 bg-white dark:bg-gray-800 shadow-lg rounded-xl space-y-6">

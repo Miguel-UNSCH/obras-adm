@@ -15,7 +15,9 @@ interface NewCoordinatesProps {
   setPoints: React.Dispatch<React.SetStateAction<[number, number][]>>;
 }
 
-function NewCoordinates({ points, setPoints }: NewCoordinatesProps) {
+function 
+
+NewCoordinates({ points, setPoints }: NewCoordinatesProps) {
   const [userLocation, setUserLocation] = useState<UserLocation | null>(null);
   const [polygonData, setPolygonData] = useState<Feature<Polygon> | null>(null);
   const [locationError, setLocationError] = useState<string | null>(null);

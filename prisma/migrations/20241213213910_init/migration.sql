@@ -32,11 +32,12 @@ CREATE TABLE "VerificationToken" (
 -- CreateTable
 CREATE TABLE "Coordinates" (
     "id" TEXT NOT NULL PRIMARY KEY,
+    "resident" TEXT NOT NULL,
+    "projectType" TEXT NOT NULL,
     "cui" TEXT NOT NULL,
-    "nombre" TEXT NOT NULL,
-    "latitude" TEXT NOT NULL,
-    "longitude" TEXT NOT NULL,
-    "area" TEXT
+    "name" TEXT NOT NULL,
+    "area" TEXT,
+    "points" TEXT NOT NULL
 );
 
 -- CreateIndex
