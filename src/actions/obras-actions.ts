@@ -75,7 +75,7 @@ export async function guardarObra(
   cui: string,
   name: string,
   points: number[][],
-  area: string
+  areaOrLength: string
 ) {
   try {
     const obra = await db.coordinates.create({
@@ -84,7 +84,7 @@ export async function guardarObra(
         projectType: projectType,
         cui: cui,
         name: name,
-        area: area,
+        areaOrLength: areaOrLength,
         points: JSON.stringify(points),
       },
     });

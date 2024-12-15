@@ -1,49 +1,60 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
-const Radio = () => {
-    const [selected, setSelected] = useState("motorbike");
+interface RadioProps {
+  setProjectType: (newType: string) => void;  // Cambiado para aceptar una función personalizada
+}
 
-    const handleChange = (value: string) => {
-        setSelected(value);
-    };
+const Radio = ({ setProjectType }: RadioProps) => {
+  const [selected, setSelected] = useState("figura");
 
-    return (
-        <StyledWrapper selected={selected}>
-            <div className="radio-inputs">
-                <label htmlFor="figura">
-                    <input
-                        id="figura"
-                        className="radio-input"
-                        type="radio"
-                        name="engine"
-                        value="figura"
-                        checked={selected === "figura"}
-                        onChange={() => handleChange("figura")}
-                    />
-                    <span className="radio-tile">
-                        <span className="radio-icon"></span>
-                        <span className="radio-label">Figura</span>
-                    </span>
-                </label>
-                <label htmlFor="linea">
-                    <input
-                        id="linea"
-                        className="radio-input"
-                        type="radio"
-                        name="engine"
-                        value="linea"
-                        checked={selected === "linea"}
-                        onChange={() => handleChange("linea")}
-                    />
-                    <span className="radio-tile">
-                        <span className="radio-icon"></span>
-                        <span className="radio-label">Línea</span>
-                    </span>
-                </label>
-            </div>
-        </StyledWrapper>
-    );
+  const handleChange = (value: string) => {
+    setSelected(value);
+    setProjectType(value);  // Llamamos a la función pasada como prop
+  };
+
+  useEffect(() => {
+    setProjectType(selected); // Actualiza el tipo de proyecto cuando cambia la selección
+  }, [selected, setProjectType]);
+
+  return (
+    <StyledWrapper selected={selected}>
+      <div className="radio-inputs">
+        <label htmlFor="figura">
+          <input
+            id="figura"
+            className="radio-input"
+            type="radio"
+            name="engine"
+            value="figura"
+            checked={selected === "figura"}
+            onChange={() => handleChange("figura")}
+            aria-checked={selected === "figura"}
+          />
+          <span className="radio-tile">
+            <span className="radio-icon"></span>
+            <span className="radio-label">Figura</span>
+          </span>
+        </label>
+        <label htmlFor="linea">
+          <input
+            id="linea"
+            className="radio-input"
+            type="radio"
+            name="engine"
+            value="linea"
+            checked={selected === "linea"}
+            onChange={() => handleChange("linea")}
+            aria-checked={selected === "linea"}
+          />
+          <span className="radio-tile">
+            <span className="radio-icon"></span>
+            <span className="radio-label">Línea</span>
+          </span>
+        </label>
+      </div>
+    </StyledWrapper>
+  );
 };
 
 const StyledWrapper = styled.div<{ selected: string }>`
@@ -83,9 +94,9 @@ const StyledWrapper = styled.div<{ selected: string }>`
 
   .radio-input:checked + .radio-tile {
     border-color: ${({ selected }) =>
-        selected === "figura" ? "#28a745" : "#ffc107"};
+    selected === "figura" ? "#28a745" : "#ffc107"};
     background-color: ${({ selected }) =>
-        selected === "figura" ? "#e9f7ef" : "#fff8e1"};
+    selected === "figura" ? "#e9f7ef" : "#fff8e1"};
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
     color: ${({ selected }) => (selected === "figura" ? "#28a745" : "#ffc107")};
   }
@@ -104,7 +115,7 @@ const StyledWrapper = styled.div<{ selected: string }>`
 
   .radio-input:checked + .radio-tile .radio-icon {
     background-color: ${({ selected }) =>
-        selected === "figura" ? "#28a745" : "#ffc107"};
+    selected === "figura" ? "#28a745" : "#ffc107"};
     color: white;
   }
 

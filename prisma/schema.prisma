@@ -46,11 +46,11 @@ model VerificationToken {
 }
 
 model Coordinates {
-  id          String  @id @default(cuid())
-  resident    String
-  projectType String
-  cui         String
-  name        String
-  area        String?
-  points      String
+  id           String  @id @default(cuid())
+  resident     String
+  projectType  String
+  cui          String
+  name         String
+  areaOrLength String?
+  points       String
 }

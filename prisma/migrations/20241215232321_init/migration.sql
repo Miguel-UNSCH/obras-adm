@@ -36,7 +36,7 @@ CREATE TABLE "Coordinates" (
     "projectType" TEXT NOT NULL,
     "cui" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "area" TEXT,
+    "areaOrLength" TEXT,
     "points" TEXT NOT NULL
 );
 
