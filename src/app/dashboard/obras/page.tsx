@@ -10,6 +10,7 @@ async function Page() {
     codigo_CUI: proyecto.codigo_CUI,
     nombre_completo: proyecto.nombre_completo
   }));
+
   return (
     <div className="gap-4">
       <ObrasContainer obras={obras} />

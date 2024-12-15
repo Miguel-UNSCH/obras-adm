@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { Feature, Polygon } from 'geojson';
 import { TbPointFilled } from "react-icons/tb";
 import ButtonBack from '@/components/ui/icons-back';
+import Radio from './option-figura';
 
 interface UserLocation {
   latitude: number;
@@ -11,13 +12,13 @@ interface UserLocation {
 }
 
 interface NewCoordinatesProps {
-  points: [number, number][]; 
+  points: [number, number][];
   setPoints: React.Dispatch<React.SetStateAction<[number, number][]>>;
 }
 
-function 
+function
 
-NewCoordinates({ points, setPoints }: NewCoordinatesProps) {
+  NewCoordinates({ points, setPoints }: NewCoordinatesProps) {
   const [userLocation, setUserLocation] = useState<UserLocation | null>(null);
   const [polygonData, setPolygonData] = useState<Feature<Polygon> | null>(null);
   const [locationError, setLocationError] = useState<string | null>(null);
@@ -148,11 +149,14 @@ NewCoordinates({ points, setPoints }: NewCoordinatesProps) {
       <div className='absolute top-4 left-4 z-10'>
         <ButtonBack onClick={handleButtonClick} />
       </div>
+      <div className='absolute top-4 right-4 z-10'>
+        <Radio />
+      </div>
 
       <Map
         initialViewState={{
-          longitude: -74.225832,
-          latitude: -13.160441,
+          longitude: defaultLocation.longitude,
+          latitude: defaultLocation.latitude,
           zoom: 13,
         }}
         attributionControl={false}
