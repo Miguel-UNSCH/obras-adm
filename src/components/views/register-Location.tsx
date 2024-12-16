@@ -226,7 +226,7 @@ function NewCoordinates({ points, setPoints, setProjectType }: NewCoordinatesPro
               id="polygon-layer"
               type="fill"
               paint={{
-                'fill-color': '#E28F1B',
+                'fill-color': '#CA3938',
                 'fill-opacity': 0.5,
               }}
             />

@@ -6,6 +6,8 @@ import { useState, useMemo } from "react";
 import ButtonSave from "@/components/ui/icons-save";
 import { guardarObra } from "@/actions/obras-actions";
 import * as turf from "@turf/turf";
+import toasterCustom from "@/components/toaster-custom";
+import { toast } from "sonner";
 
 interface ObrasProps {
   nombre: string;
@@ -33,52 +35,97 @@ function ObrasContainer({ obras }: ObrasContainerProps) {
   );
 
   const handleSaveClick = async () => {
-    if (!selectedOption) return console.log("Por favor, selecciona una opción.");
+    // Verificar si se seleccionó una opción en el select
+    if (!selectedOption) {
+      toasterCustom(400, "Por favor, selecciona una obra antes de continuar.");
+      return;
+    }
 
-    if (points.length < 2) return console.log("Se necesitan al menos 2 puntos", points.length);
+    // Verificar si hay al menos 3 puntos únicos
+    if (points.length < 3) {
+      toasterCustom(400, "Por favor, introduce al menos 3 puntos para continuar.");
+      return;
+    }
 
     const coordinates = [...points];
 
-    // Asegúrate de que el primer y último punto sean iguales si se está creando un polígono
+    // Asegúrate de cerrar el polígono
     if (!turf.booleanEqual(turf.point(coordinates[0]), turf.point(coordinates[coordinates.length - 1]))) {
       coordinates.push(coordinates[0]);
     }
 
-    let areaOrLength: string;
-
-    // Si el tipo de proyecto es 'figura', calculamos el área del polígono
-    if (projectType === "figura") {
-      const polygon = turf.polygon([coordinates]);
-      const area = turf.area(polygon).toFixed(2);  // Área en metros cuadrados
-      areaOrLength = `${area} m²`;  // Mostramos el área
+    if (coordinates.length < 4) {
+      toasterCustom(400, "El polígono no tiene suficientes puntos para ser válido.");
+      return;
     }
-    // Si el tipo de proyecto es 'línea', calculamos la longitud de la línea
-    else if (projectType === "linea") {
-      const line = turf.lineString(coordinates);
-      const length = turf.length(line, { units: 'meters' }).toFixed(2);  // Longitud en metros
-      areaOrLength = `${length} m`;  // Mostramos la longitud
+
+    let areaOrLength;
+
+    // Calcular área o longitud según el tipo de proyecto
+    if (projectType === "figura") {
+      try {
+        const polygon = turf.polygon([coordinates]);
+        const area = turf.area(polygon).toFixed(2); // Área en metros cuadrados
+        areaOrLength = `${area} m²`;
+      } catch (error) {
+        toasterCustom(500, "Error al calcular el área del polígono.");
+        return;
+      }
+    } else if (projectType === "linea") {
+      try {
+        const line = turf.lineString(coordinates);
+        const length = turf.length(line, { units: "meters" }).toFixed(2); // Longitud en metros
+        areaOrLength = `${length} m`;
+      } catch (error) {
+        toasterCustom(500, "Error al calcular la longitud de la línea.");
+        return;
+      }
     } else {
-      return console.log("Tipo de proyecto no válido.");
+      toasterCustom(400, "Tipo de proyecto no válido.");
+      return;
     }
 
     const obraSeleccionada = obras.find((obra) => obra.nombre === selectedOption);
-    if (!obraSeleccionada) return console.error("No se encontró la obra seleccionada.");
+    if (!obraSeleccionada) {
+      toasterCustom(400, "No se encontró la obra seleccionada.");
+      return;
+    }
 
     try {
-      await guardarObra(
+      // Validar antes de enviar
+      if (!obraSeleccionada || !coordinates || !areaOrLength) {
+        toasterCustom(400, "Por favor complete todos los campos requeridos.");
+        return;
+      }
+
+      const data = await guardarObra(
         obraSeleccionada.nombre_completo,
         projectType,
         obraSeleccionada.codigo_CUI,
         selectedOption,
         coordinates,
-        areaOrLength  // Enviamos el área o longitud
+        areaOrLength
       );
-      console.log("Datos guardados correctamente.");
+
+      if (!data) {
+        toasterCustom(500, "Ocurrió un error inesperado");
+        return;
+      }
+
+      toast.dismiss();
+      toasterCustom(data.status, data.message);
+
+      // Recargar la página si se guardó correctamente
+      if (data.status === 200) {
+        setTimeout(() => {
+          window.location.reload(); // Actualiza la página después de un breve retraso
+        }, 1000); // Opcional: espera 1 segundo para mostrar el mensaje antes de recargar
+      }
     } catch (error) {
+      toasterCustom(500, "Error al procesar la solicitud.");
       console.error("Error al guardar los datos:", error);
     }
   };
-
 
   return (
     <div className="space-y-6">

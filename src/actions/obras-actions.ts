@@ -31,6 +31,7 @@ export async function getObras() {
 
 export async function getProyectos() {
   try {
+
     // const result = await query(
     //   `SELECT 
     //     app.nombre, 
@@ -44,6 +45,7 @@ export async function getProyectos() {
     //   WHERE apu.rol = '2';`,
     //   []
     // );
+
     const prueba = [
       {
         nombre: "MEJORAMIENTO Y AMPLIACION DE LOS SERVICIOS DEL SANTUARIO DE LA MEMORIA LA HOYADA EN EL DISTRITO DE ANDRES AVELINO CACERES - PROVINCIA DE HUAMANGA - DEPARTAMENTO DE AYACUCHO",
@@ -62,7 +64,21 @@ export async function getProyectos() {
       }
     ];
 
-    return prueba;
+    // Recuperar los proyectos existentes en coordinates
+    const coordinates = await db.coordinates.findMany({
+      select: {
+        cui: true, // Solo recuperar el campo "cui"
+      },
+    });
+
+    // Extraer los códigos CUI existentes en coordinates
+    const existingCuis = new Set(coordinates.map(coordinate => coordinate.cui));
+
+    // Filtrar los proyectos que no están en coordinates
+    const missingProjects = prueba.filter(project => !existingCuis.has(project.codigo_CUI));
+
+    return missingProjects;
+
   } catch (error) {
     console.error("Error al obtener las obras: ", error);
     return [];
@@ -78,20 +94,24 @@ export async function guardarObra(
   areaOrLength: string
 ) {
   try {
-    const obra = await db.coordinates.create({
+    // Guardar en la base de datos
+    await db.coordinates.create({
       data: {
-        resident: resident,
-        projectType: projectType,
-        cui: cui,
-        name: name,
-        areaOrLength: areaOrLength,
-        points: JSON.stringify(points),
+        resident,
+        projectType,
+        cui,
+        name,
+        areaOrLength,
+        points: JSON.stringify(points), // Asegurarse de que 'points' sea un arreglo válido
       },
     });
-    return { success: true, message: "Obra y puntos guardados con éxito" };
+
+    // Retornar éxito
+    return { message: "La obra y las coordenadas se guardaron con éxito", status: 200 };
   } catch (error) {
-    console.error("Error al guardar la obra y puntos:", error);
-    return { success: false, message: "Error al guardar la obra y puntos", error };
+    console.error("Error al guardar en la base de datos:", error);
+    // Manejo de errores en la base de datos
+    return { message: `Error al guardar`, status: 500 };
   }
 }
 

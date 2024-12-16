@@ -86,7 +86,7 @@ const StyledWrapper = styled.div<{ selected: string }>`
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
     &:hover {
-      border-color: #007bff;
+      border-color: #F7700A;
       background-color: #e6f2ff;
       transform: scale(1.05);
     }
@@ -94,11 +94,11 @@ const StyledWrapper = styled.div<{ selected: string }>`
 
   .radio-input:checked + .radio-tile {
     border-color: ${({ selected }) =>
-    selected === "figura" ? "#28a745" : "#ffc107"};
+    selected === "figura" ? "#CA3938" : "#ffc107"};
     background-color: ${({ selected }) =>
     selected === "figura" ? "#e9f7ef" : "#fff8e1"};
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-    color: ${({ selected }) => (selected === "figura" ? "#28a745" : "#ffc107")};
+    color: ${({ selected }) => (selected === "figura" ? "#CA3938" : "#ffc107")};
   }
 
   .radio-icon {
@@ -115,7 +115,7 @@ const StyledWrapper = styled.div<{ selected: string }>`
 
   .radio-input:checked + .radio-tile .radio-icon {
     background-color: ${({ selected }) =>
-    selected === "figura" ? "#28a745" : "#ffc107"};
+    selected === "figura" ? "#CA3938" : "#ffc107"};
     color: white;
   }
 
