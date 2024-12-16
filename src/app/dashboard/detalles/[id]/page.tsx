@@ -3,7 +3,7 @@ import { useParams } from 'next/navigation';
 import DetallesContainer from './detalles-container';
 import ImagesContainer from './images-container';
 import { getDetalles } from '@/actions/details-action';
-import { getImg, getTime } from '@/actions/img-actions';
+import { getImg } from '@/actions/img-actions';
 import { useEffect, useState } from 'react';
 
 interface Obra {
@@ -14,6 +14,7 @@ interface Obra {
   areaOrLength: string | null;
   resident: string;
   projectType: string;
+  propietario_id: string;
 }
 
 interface Imgs {
@@ -22,17 +23,15 @@ interface Imgs {
   latitud: string | null;
   longitud: string | null;
   date: Date | null;
-}
-
-interface Days {
-  day: string;
+  update: string | null;
+  propietario_id: string;
 }
 
 function Page() {
   const { id } = useParams();
   const [obra, setObra] = useState<Obra | null>(null);
   const [img, setImg] = useState<Imgs[] | null>(null);
-  const [day, setDay] = useState<Days[] | null>(null);
+  const [day, setDay] = useState<string>("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -40,26 +39,22 @@ function Page() {
         const data = await getDetalles(id);
         setObra(data);
 
-        const imgs = await getImg();
-        setImg(imgs);
-
-        const days = await getTime();
-        const formattedDays = days ? days.map(d => ({ day: d.dia })) : null;
-        setDay(formattedDays);
+        if (data && data.propietario_id) {
+          const imgs = await getImg(data.propietario_id, day);
+          setImg(imgs);
+        }
       }
     };
 
     fetchData();
-  }, [id]);
-
-  console.log(day);
+  }, [id, day]);
 
   if (!obra) return <div>Cargando...</div>;
 
   return (
-    <div className="h-full grid grid-cols-2 gap-4">
+    <div className="h-full grid grid-cols-1 md:grid-cols-2 gap-4">
       <div className="h-full">
-        <ImagesContainer imgs={img} />
+        <ImagesContainer setDay={setDay} imgs={img} />
       </div>
       <div className="h-full">
         <DetallesContainer obra={obra} />

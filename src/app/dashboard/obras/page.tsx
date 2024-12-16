@@ -8,7 +8,8 @@ async function Page() {
   const obras = proyectos.map((proyecto: any) => ({
     nombre: proyecto.nombre,
     codigo_CUI: proyecto.codigo_CUI,
-    nombre_completo: proyecto.nombre_completo
+    nombre_completo: proyecto.nombre_completo,
+    propietario_id: proyecto.propietario_id
   }));
 
   return (

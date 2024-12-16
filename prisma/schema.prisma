@@ -22,8 +22,6 @@ model User {
   password      String
   sessions      Session[]
 
-  userImages    Image[]
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -48,13 +46,14 @@ model VerificationToken {
 }
 
 model Coordinates {
-  id           String  @id @default(cuid())
-  resident     String
-  projectType  String
-  cui          String
-  name         String
-  areaOrLength String?
-  points       String
+  id            String  @id @default(cuid())
+  propietario_id   String
+  resident      String
+  projectType   String
+  cui           String
+  name          String
+  areaOrLength  String?
+  points        String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -64,10 +63,8 @@ model Image {
   url          String? 
   latitud      String?
   longitud     String?
+  propietario_id  String
   date         DateTime?
-
-  userId       String
-  user         User     @relation(fields: [userId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

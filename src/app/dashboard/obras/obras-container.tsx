@@ -13,6 +13,7 @@ interface ObrasProps {
   nombre: string;
   codigo_CUI: string;
   nombre_completo: string;
+  propietario_id: string;
 } 
 
 interface OptionProps {
@@ -104,7 +105,8 @@ function ObrasContainer({ obras }: ObrasContainerProps) {
         obraSeleccionada.codigo_CUI,
         selectedOption,
         points,
-        areaOrLength
+        areaOrLength,
+        obraSeleccionada.propietario_id,
       );
 
       if (!data) {

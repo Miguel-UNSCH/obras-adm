@@ -7,7 +7,7 @@ export async function getDetalles(id: string) {
     const result = await db.coordinates.findMany();
 
     // Buscar la obra con el CUI proporcionado
-    const obraEncontrada = result.find((obra) => obra.cui === id);
+    const obraEncontrada = result.find((obra) => obra.id === id);
 
     // Si no se encuentra la obra, devolver null
     if (!obraEncontrada) {
@@ -19,10 +19,11 @@ export async function getDetalles(id: string) {
       id: obraEncontrada.id,
       cui: obraEncontrada.cui,
       name: obraEncontrada.name,
-      points: JSON.parse(obraEncontrada.points), // Asegurarse de que los puntos estén parseados
+      points: JSON.parse(obraEncontrada.points),
       areaOrLength: obraEncontrada.areaOrLength,
       resident: obraEncontrada.resident,
       projectType: obraEncontrada.projectType,
+      propietario_id: obraEncontrada.propietario_id,
     };
 
     return formattedObra;

@@ -2,7 +2,7 @@ import { Calendar } from "@/components/ui/calendar";
 import React from "react";
 
 interface DayProps {
-  Daysworked: string[]; // Fechas trabajadas como cadenas
+  Daysworked: string [];
   setDay: React.Dispatch<React.SetStateAction<string>>;
 }
 
@@ -15,9 +15,9 @@ function CalendarCustom({ Daysworked, setDay }: DayProps) {
     }
   }, [selectedDate, setDay]);
 
-  // Convertimos las fechas de Daysworked a objetos Date
+  // Convertimos las fechas trabajadas a objetos Date
   const trabajadasDates = Daysworked.map((date) => new Date(date));
-
+  
   return (
     <div className="h-full p-4 flex flex-col justify-between max-w-full overflow-hidden">
       <Calendar
@@ -26,10 +26,10 @@ function CalendarCustom({ Daysworked, setDay }: DayProps) {
         onSelect={setSelectedDate}
         className="max-w-full max-h-full text-xs"
         modifiers={{
-          trabajadas: trabajadasDates, // Definimos un modificador para las fechas trabajadas
+          Daysworked: trabajadasDates,
         }}
         modifiersClassNames={{
-          trabajadas: "bg-blue-500 text-white", // Clases para el modificador trabajadas
+          Daysworked: "bg-blue-500 text-white",
         }}
       />
     </div>

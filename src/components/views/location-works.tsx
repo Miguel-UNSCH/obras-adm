@@ -13,6 +13,7 @@ interface Obra {
   areaOrLength: string | null;
   resident: string;
   projectType: string;
+  propietario_id: string;
 }
 
 const LocationObras: React.FC<{ obra: Obra }> = ({ obra }) => {
@@ -131,7 +132,7 @@ const LocationObras: React.FC<{ obra: Obra }> = ({ obra }) => {
                   Cerrar
                 </Button>
                 <Link
-                  href={`/dashboard/detalles/${obra.cui}`}
+                  href={`/dashboard/detalles/${obra.id}`}
                   className="mx-auto px-4 py-2 bg-green-400 text-sm text-center items-center rounded-md hover:bg-green-600 transition-colors duration-300"
                 >
                   Detalles

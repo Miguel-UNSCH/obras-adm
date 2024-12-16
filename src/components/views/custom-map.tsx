@@ -13,6 +13,7 @@ interface Obras {
   areaOrLength: string | null;
   resident: string;
   projectType: string;
+  propietario_id: string;
 }
 
 type obrasProsp = {

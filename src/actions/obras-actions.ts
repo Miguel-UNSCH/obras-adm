@@ -11,10 +11,11 @@ export async function getObras() {
       id: obra.id,
       cui: obra.cui,
       name: obra.name,
-      points: JSON.parse(obra.points),
-      areaOrLength: obra.areaOrLength,
       resident: obra.resident,
       projectType: obra.projectType,
+      points: JSON.parse(obra.points),
+      areaOrLength: obra.areaOrLength,
+      propietario_id: obra.propietario_id,
     }));
   } catch (error) {
     console.error("Error al obtener las obras:", error);
@@ -29,7 +30,8 @@ export async function getProyectos() {
     const result = await query(
       `SELECT 
         app.nombre, 
-        app."codigo_CUI", 
+        app."codigo_CUI",
+        apa.propietario_id,
         CONCAT(apu.apellido_paterno, ' ', apu.apellido_materno, ' ', apu.nombre) AS nombre_completo
       FROM public."archivoProject_proyecto" app
       INNER JOIN public."archivoProject_archivo" apa 
@@ -67,7 +69,8 @@ export async function guardarObra(
   cui: string,
   name: string,
   points: number[][],
-  areaOrLength: string
+  areaOrLength: string,
+  propietario_id: string
 ) {
   try {
     // Guardar en la base de datos
@@ -79,6 +82,7 @@ export async function guardarObra(
         name,
         areaOrLength,
         points: JSON.stringify(points), // Asegurarse de que 'points' sea un arreglo válido
+        propietario_id,
       },
     });
 

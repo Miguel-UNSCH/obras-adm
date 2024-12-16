@@ -32,6 +32,7 @@ CREATE TABLE "VerificationToken" (
 -- CreateTable
 CREATE TABLE "Coordinates" (
     "id" TEXT NOT NULL PRIMARY KEY,
+    "propietario_id" TEXT NOT NULL,
     "resident" TEXT NOT NULL,
     "projectType" TEXT NOT NULL,
     "cui" TEXT NOT NULL,
@@ -48,11 +49,10 @@ CREATE TABLE "Image" (
     "url" TEXT,
     "latitud" TEXT,
     "longitud" TEXT,
+    "propietario_id" TEXT NOT NULL,
     "date" DATETIME,
-    "userId" TEXT NOT NULL,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL,
-    CONSTRAINT "Image_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+    "updatedAt" DATETIME NOT NULL
 );
 
 -- CreateIndex
