@@ -1,25 +1,28 @@
-import { Feature, Polygon } from 'geojson';
+import { Feature, Polygon, LineString } from 'geojson';
 import { useState } from 'react';
 import { FaMapMarkerAlt } from 'react-icons/fa';
 import { Marker, Source, Layer } from 'react-map-gl/maplibre';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { useRouter } from 'next/router'; // Asegúrate de importar useRouter
-
-
 
 interface Obra {
-  tipo_proyecto: string;
-  nombre: string;
-  codigo_CUI: string;
-  propietario_id: string;
-  nombre_completo: string;
-  coordinates: number[][];
+  id: string;
+  cui: string;
+  name: string;
+  points: number[][];
+  areaOrLength: string | null;
+  resident: string;
+  projectType: string;
 }
 
 const LocationObras: React.FC<{ obra: Obra }> = ({ obra }) => {
   const [selectedMarker, setSelectedMarker] = useState<string | null>(null);
   const [showDetails, setShowDetails] = useState<boolean>(false);
+
+  // Determinar el tipo de obra
+  const typeObra = obra.projectType === 'Superficie' ? 'Polygon' : 'LineString';
+
+  // Calcular el centroide de las coordenadas
   const calculateCentroid = (coordinates: number[][]): { longitude: number; latitude: number } => {
     let sumLat = 0;
     let sumLon = 0;
@@ -29,34 +32,54 @@ const LocationObras: React.FC<{ obra: Obra }> = ({ obra }) => {
       sumLon += coord[0];
     });
 
-    const centroid = {
+    return {
       latitude: sumLat / coordinates.length,
       longitude: sumLon / coordinates.length,
     };
-
-    return centroid;
   };
 
-  const centroid = calculateCentroid(obra.coordinates);
+  const centroid = calculateCentroid(obra.points);
 
-  const polygonLayer = {
-    id: `polygon-layer-${obra.propietario_id}`,
-    type: 'fill' as 'fill',
-    paint: {
-      'fill-color': '#088ff5',
-      'fill-opacity': 0.5,
-      'fill-outline-color': '#000000',
-    },
-  };
+  // Configuración de la capa
+  const layerConfig =
+    typeObra === 'Polygon'
+      ? {
+          id: `polygon-layer-${obra.id}`,
+          type: 'fill' as 'fill',
+          paint: {
+            'fill-color': '#088ff5',
+            'fill-opacity': 0.5,
+            'fill-outline-color': '#000000',
+          },
+        }
+      : {
+          id: `line-layer-${obra.id}`,
+          type: 'line' as 'line',
+          paint: {
+            'line-color': '#FF0000',
+            'line-width': 5,
+          },
+        };
 
-  const polygonData: Feature<Polygon> = {
-    type: 'Feature',
-    properties: {},
-    geometry: {
-      type: 'Polygon',
-      coordinates: [obra.coordinates],
-    },
-  };
+  // Datos GeoJSON con tipo dinámico
+  const geoJsonData: Feature<Polygon | LineString> =
+    typeObra === 'Polygon'
+      ? {
+          type: 'Feature',
+          properties: {},
+          geometry: {
+            type: 'Polygon',
+            coordinates: [obra.points], // Para Polygon, las coordenadas son un arreglo de arreglos
+          },
+        }
+      : {
+          type: 'Feature',
+          properties: {},
+          geometry: {
+            type: 'LineString',
+            coordinates: obra.points, // Para LineString, las coordenadas son un arreglo simple
+          },
+        };
 
   const handleMarkerClick = () => {
     setSelectedMarker('marker');
@@ -69,8 +92,9 @@ const LocationObras: React.FC<{ obra: Obra }> = ({ obra }) => {
 
   return (
     <>
+      {/* Marker */}
       <Marker
-        key={`centroid-marker-${obra.codigo_CUI}`}
+        key={`centroid-marker-${obra.cui}`}
         longitude={centroid.longitude}
         latitude={centroid.latitude}
         onClick={handleMarkerClick}
@@ -78,25 +102,28 @@ const LocationObras: React.FC<{ obra: Obra }> = ({ obra }) => {
         <div className="relative">
           <FaMapMarkerAlt className="text-[#FF0000] text-4xl z-0" />
           <div
-            className={`absolute top-0 left-0 ${selectedMarker === 'marker' && showDetails ? 'block' : 'hidden'} z-50`}
+            className={`absolute top-0 left-0 ${
+              selectedMarker === 'marker' && showDetails ? 'block' : 'hidden'
+            } z-50`}
           >
             <div className="bg-gradient-to-r from-gray-900 to-black text-white p-4 rounded-lg shadow-lg w-max-6x1 w-[300px] mx-auto text-justify">
               <h2 className="text-[14px] font-extrabold mb-4 text-center">Detalles de la obra</h2>
               <div className="space-y-3">
                 <div>
-                  <strong className="text-[13px]">CUI:</strong> <span className="text-[12px] text-gray-200">{obra.codigo_CUI}</span>
+                  <strong className="text-[13px]">CUI:</strong>{' '}
+                  <span className="text-[12px] text-gray-200">{obra.cui}</span>
                 </div>
                 <div>
-                  <strong className="text-[13px]">Proyecto:</strong> <span className="text-[12px] text-gray-200">{obra.tipo_proyecto}</span>
+                  <strong className="text-[13px]">Proyecto:</strong>{' '}
+                  <span className="text-[12px] text-gray-200">{obra.projectType}</span>
                 </div>
                 <div>
                   <strong className="text-[13px]">Descripción del Proyecto:</strong>
-                  <p className="text-[12px] leading-relaxed text-gray-200">
-                    {obra.nombre}
-                  </p>
+                  <p className="text-[12px] leading-relaxed text-gray-200">{obra.name}</p>
                 </div>
                 <div>
-                  <strong className="text-[13px]">Residente:</strong> <span className="text-[12px] text-gray-200">{obra.nombre_completo}</span>
+                  <strong className="text-[13px]">Residente:</strong>{' '}
+                  <span className="text-[12px] text-gray-200">{obra.resident}</span>
                 </div>
               </div>
               <div className="flex flex-row p-3">
@@ -104,24 +131,23 @@ const LocationObras: React.FC<{ obra: Obra }> = ({ obra }) => {
                   Cerrar
                 </Button>
                 <Link
-                  href={`/dashboard/detalles/${obra.codigo_CUI}`}
-                  className="mx-auto px-4 py-3 bg-green-400 text-center items-center rounded-[10px] hover:bg-green-600 transition-colors duration-300"
+                  href={`/dashboard/detalles/${obra.cui}`}
+                  className="mx-auto px-4 py-2 bg-green-400 text-sm text-center items-center rounded-md hover:bg-green-600 transition-colors duration-300"
                 >
                   Detalles
                 </Link>
-
               </div>
             </div>
           </div>
         </div>
       </Marker>
 
-      <Source id={`source-${obra.propietario_id}`} type="geojson" data={polygonData}>
-        <Layer {...polygonLayer} />
+      {/* GeoJSON Source y Layer */}
+      <Source id={`source-${obra.id}`} type="geojson" data={geoJsonData}>
+        <Layer {...layerConfig} />
       </Source>
     </>
   );
-
 };
 
 export default LocationObras;

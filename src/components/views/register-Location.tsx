@@ -25,11 +25,11 @@ function NewCoordinates({ points, setPoints, setProjectType }: NewCoordinatesPro
   const [geoPermissionDenied, setGeoPermissionDenied] = useState(false);
   const defaultLocation: UserLocation = { latitude: -13.160441, longitude: -74.225832 };
   const [localPoints, setLocalPoints] = useState<[number, number][]>(points);
-  const [projectType, setProjectTypeState] = useState<string>("figura");
+  const [projectType, setProjectTypeState] = useState<string>("Superficie");
 
   // Función para actualizar los datos de la geometría (polígono o línea)
   const updateGeometryData = useCallback((points: [number, number][], projectType: string) => {
-    if (projectType === 'figura' && points.length >= 3) {
+    if (projectType === 'Superficie' && points.length >= 3) {
       setPolygonData({
         type: 'Feature',
         geometry: {
@@ -39,7 +39,7 @@ function NewCoordinates({ points, setPoints, setProjectType }: NewCoordinatesPro
         properties: {},
       });
       setLineData(null); // Elimina los datos de la línea cuando se cambia a polígono
-    } else if (projectType === 'linea' && points.length >= 2) {
+    } else if (projectType === 'Carretera' && points.length >= 2) {
       setLineData({
         type: 'Feature',
         geometry: {
@@ -63,7 +63,7 @@ function NewCoordinates({ points, setPoints, setProjectType }: NewCoordinatesPro
       const newPoints: [number, number][] = [...prevPoints, [lng, lat]];
 
       // Verificar el tipo de proyecto
-      if (projectType === 'linea' && newPoints.length >= 2) {
+      if (projectType === 'Carretera' && newPoints.length >= 2) {
         // Solo se debe actualizar la línea si hay al menos 2 puntos
         setLineData({
           type: 'Feature',
@@ -74,7 +74,7 @@ function NewCoordinates({ points, setPoints, setProjectType }: NewCoordinatesPro
           properties: {},
         });
         setPolygonData(null); // Elimina el polígono si es línea
-      } else if (projectType === 'figura' && newPoints.length >= 3) {
+      } else if (projectType === 'Superficie' && newPoints.length >= 3) {
         // Solo se debe actualizar el polígono si hay al menos 3 puntos
         setPolygonData({
           type: 'Feature',
@@ -193,7 +193,7 @@ function NewCoordinates({ points, setPoints, setProjectType }: NewCoordinatesPro
         <ButtonBack onClick={handleRemoveLastPoint} />
       </div>
 
-      {/* Componente para seleccionar tipo de figura */}
+      {/* Componente para seleccionar tipo de Superficie */}
       <div className='absolute top-4 right-4 z-10'>
         <Radio setProjectType={handleProjectTypeChange} />
       </div>
@@ -220,7 +220,7 @@ function NewCoordinates({ points, setPoints, setProjectType }: NewCoordinatesPro
         ))}
 
         {/* Capa para mostrar el polígono */}
-        {projectType === 'figura' && polygonData && (
+        {projectType === 'Superficie' && polygonData && (
           <Source id="polygon-source" type="geojson" data={polygonData}>
             <Layer
               id="polygon-layer"
@@ -234,7 +234,7 @@ function NewCoordinates({ points, setPoints, setProjectType }: NewCoordinatesPro
         )}
 
         {/* Capa para mostrar la línea */}
-        {projectType === 'linea' && lineData && (
+        {projectType === 'Carretera' && lineData && (
           <Source id="line-source" type="geojson" data={lineData}>
             <Layer
               id="line-layer"

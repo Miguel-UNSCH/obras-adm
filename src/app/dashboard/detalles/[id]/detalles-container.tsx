@@ -1,38 +1,44 @@
-import CalendarCustom from "@/components/views/calendar-custom";
 import DescriptionWork from "@/components/views/description-work";
-import DetailWork from "@/components/views/destail-work";
 import MapDrawingPolygon from "@/components/views/map-drawing-polygon";
 
 interface Obra {
-    tipo_proyecto: string;
-    nombre: string;
-    codigo_CUI: string;
-    propietario_id: string;
-    nombre_completo: string;
-    coordinates: number[][];
+    id: string;
+    cui: string;
+    name: string;
+    points: number[][];
+    areaOrLength: string | null;
+    resident: string;
+    projectType: string;
 }
 
 const DetallesContainer: React.FC<{ obra: Obra }> = ({ obra }) => {
 
+    const mapDetails = {
+        id: obra.id,
+        points: obra.points,
+        projectType: obra.projectType,
+    };
+
+    const descriptionDetails = {
+        id: obra.id,
+        cui: obra.cui,
+        name: obra.name,
+        areaOrLength: obra.areaOrLength,
+        resident: obra.resident,
+        projectType: obra.projectType,
+    };
+
     return (
-        <div className="h-full grid gap-x-4 gap-y-1 grid-cols-1 md:grid-cols-2 md:grid-rows-2 p-1 overflow-hidden">
-            <div className="bg-gradient-to-tr from-[#FFCEB7] dark:from-[#0F172A] dark:to-[#065F46] to-[#E3D8D6] rounded-3xl shadow-xl overflow-hidden">
-                <CalendarCustom />
+        <div className="h-full flex flex-col space-y-4">
+            <div className="flex-1 rounded-3xl overflow-hidden">
+                <MapDrawingPolygon obra={mapDetails} />
             </div>
-
-            <div className="rounded-3xl overflow-hidden">
-                <MapDrawingPolygon obra={obra} />
-            </div>
-
-            <div className="p-3 rounded-3xl overflow-hidden">
-                <DescriptionWork obra={obra} />
-            </div>
-
-            <div className="p-3 rounded-3xl overflow-hidden">
-                <DetailWork />
+            <div className="flex-1 p-2 rounded-3xl overflow-hidden">
+                <DescriptionWork obra={descriptionDetails} />
             </div>
         </div>
+
     );
-}
+};
 
 export default DetallesContainer;

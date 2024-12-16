@@ -6,11 +6,11 @@ import { Input } from "@/components/ui/input";
 import ObraCard from "@/components/obraCard";
 
 interface Obra {
-  tipo_proyecto: string;
-  nombre: string;
-  codigo_CUI: string;
-  propietario_id: string;
-  nombre_completo: string;
+  cui: string;
+  name: string;
+  areaOrLength: string | null;
+  resident: string;
+  projectType: string;
 }
 
 type obrasProsp = {
@@ -27,10 +27,10 @@ function SideDashboard({ obrasT }: obrasProsp) {
 
     const filtered = obrasT.filter((obra) => {
       const matchesSearch =
-        obra.nombre.toLowerCase().includes(searchTerm) ||
-        obra.codigo_CUI.toLowerCase().includes(searchTerm) ||
-        obra.nombre_completo.toLowerCase().includes(searchTerm);
-
+        obra.name.toLowerCase().includes(searchTerm) ||
+        obra.projectType.toLowerCase().includes(searchTerm) ||
+        obra.cui.toLowerCase().includes(searchTerm) ||
+        obra.resident.toLowerCase().includes(searchTerm);
       return matchesSearch;
     });
 

@@ -6,7 +6,7 @@ interface RadioProps {
 }
 
 const Radio = ({ setProjectType }: RadioProps) => {
-  const [selected, setSelected] = useState("figura");
+  const [selected, setSelected] = useState("Superficie");
 
   const handleChange = (value: string) => {
     setSelected(value);
@@ -20,32 +20,32 @@ const Radio = ({ setProjectType }: RadioProps) => {
   return (
     <StyledWrapper selected={selected}>
       <div className="radio-inputs">
-        <label htmlFor="figura">
+        <label htmlFor="Superficie">
           <input
-            id="figura"
+            id="Superficie"
             className="radio-input"
             type="radio"
             name="engine"
-            value="figura"
-            checked={selected === "figura"}
-            onChange={() => handleChange("figura")}
-            aria-checked={selected === "figura"}
+            value="Superficie"
+            checked={selected === "Superficie"}
+            onChange={() => handleChange("Superficie")}
+            aria-checked={selected === "Superficie"}
           />
           <span className="radio-tile">
             <span className="radio-icon"></span>
             <span className="radio-label">Figura</span>
           </span>
         </label>
-        <label htmlFor="linea">
+        <label htmlFor="Carretera">
           <input
-            id="linea"
+            id="Carretera"
             className="radio-input"
             type="radio"
             name="engine"
-            value="linea"
-            checked={selected === "linea"}
-            onChange={() => handleChange("linea")}
-            aria-checked={selected === "linea"}
+            value="Carretera"
+            checked={selected === "Carretera"}
+            onChange={() => handleChange("Carretera")}
+            aria-checked={selected === "Carretera"}
           />
           <span className="radio-tile">
             <span className="radio-icon"></span>
@@ -94,11 +94,11 @@ const StyledWrapper = styled.div<{ selected: string }>`
 
   .radio-input:checked + .radio-tile {
     border-color: ${({ selected }) =>
-    selected === "figura" ? "#CA3938" : "#ffc107"};
+    selected === "Superficie" ? "#CA3938" : "#ffc107"};
     background-color: ${({ selected }) =>
-    selected === "figura" ? "#e9f7ef" : "#fff8e1"};
+    selected === "Superficie" ? "#e9f7ef" : "#fff8e1"};
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-    color: ${({ selected }) => (selected === "figura" ? "#CA3938" : "#ffc107")};
+    color: ${({ selected }) => (selected === "Superficie" ? "#CA3938" : "#ffc107")};
   }
 
   .radio-icon {
@@ -115,7 +115,7 @@ const StyledWrapper = styled.div<{ selected: string }>`
 
   .radio-input:checked + .radio-tile .radio-icon {
     background-color: ${({ selected }) =>
-    selected === "figura" ? "#CA3938" : "#ffc107"};
+    selected === "Superficie" ? "#CA3938" : "#ffc107"};
     color: white;
   }
 

@@ -74,7 +74,7 @@ export function CuentaContainer({ session }: CuentaContainerProps) {
       router.refresh();
       setTimeout(() => {
         signOut({ callbackUrl: "/" });
-      }, 2000);
+      }, 3000);
     } else {
       toast.dismiss();
       toasterCustom(data.status, data.message);

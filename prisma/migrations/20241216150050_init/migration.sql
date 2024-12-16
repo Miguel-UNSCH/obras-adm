@@ -37,7 +37,22 @@ CREATE TABLE "Coordinates" (
     "cui" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "areaOrLength" TEXT,
-    "points" TEXT NOT NULL
+    "points" TEXT NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL
+);
+
+-- CreateTable
+CREATE TABLE "Image" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "url" TEXT,
+    "latitud" TEXT,
+    "longitud" TEXT,
+    "date" DATETIME,
+    "userId" TEXT NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL,
+    CONSTRAINT "Image_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- CreateIndex

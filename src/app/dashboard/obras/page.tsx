@@ -12,7 +12,7 @@ async function Page() {
   }));
 
   return (
-    <div className="gap-4">
+    <div className="h-full">
       <ObrasContainer obras={obras} />
     </div>
   );

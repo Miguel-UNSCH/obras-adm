@@ -22,6 +22,8 @@ model User {
   password      String
   sessions      Session[]
 
+  userImages    Image[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -53,4 +55,20 @@ model Coordinates {
   name         String
   areaOrLength String?
   points       String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Image {
+  id           String @id @default(cuid())
+  url          String? 
+  latitud      String?
+  longitud     String?
+  date         DateTime?
+
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

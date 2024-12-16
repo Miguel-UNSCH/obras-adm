@@ -6,12 +6,13 @@ import Map, { NavigationControl } from 'react-map-gl/maplibre';
 import LocationObras from './location-works';
 
 interface Obras {
-  tipo_proyecto: string;
-  nombre: string;
-  codigo_CUI: string;
-  propietario_id: string;
-  nombre_completo: string;
-  coordinates: number[][];
+  id: string;
+  cui: string;
+  name: string;
+  points: number[][];
+  areaOrLength: string | null;
+  resident: string;
+  projectType: string;
 }
 
 type obrasProsp = {

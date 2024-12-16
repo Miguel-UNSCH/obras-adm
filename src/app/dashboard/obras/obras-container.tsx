@@ -13,7 +13,7 @@ interface ObrasProps {
   nombre: string;
   codigo_CUI: string;
   nombre_completo: string;
-}
+} 
 
 interface OptionProps {
   value: string;
@@ -62,7 +62,7 @@ function ObrasContainer({ obras }: ObrasContainerProps) {
     let areaOrLength;
 
     // Calcular área o longitud según el tipo de proyecto
-    if (projectType === "figura") {
+    if (projectType === "Superficie") {
       try {
         const polygon = turf.polygon([coordinates]);
         const area = turf.area(polygon).toFixed(2); // Área en metros cuadrados
@@ -71,7 +71,7 @@ function ObrasContainer({ obras }: ObrasContainerProps) {
         toasterCustom(500, "Error al calcular el área del polígono.");
         return;
       }
-    } else if (projectType === "linea") {
+    } else if (projectType === "Carretera") {
       try {
         const line = turf.lineString(coordinates);
         const length = turf.length(line, { units: "meters" }).toFixed(2); // Longitud en metros
@@ -103,7 +103,7 @@ function ObrasContainer({ obras }: ObrasContainerProps) {
         projectType,
         obraSeleccionada.codigo_CUI,
         selectedOption,
-        coordinates,
+        points,
         areaOrLength
       );
 
