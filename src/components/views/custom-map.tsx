@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import Map, { NavigationControl } from 'react-map-gl/maplibre';
 import LocationObras from './location-works';
+import Loader from './wait-custom';
 
 interface Obras {
   id: string;
@@ -25,7 +26,7 @@ interface UserLocation {
   longitude: number;
 }
 
-function CustomMap({ obrasT }: obrasProsp ) {
+function CustomMap({ obrasT }: obrasProsp) {
   const [userLocation, setUserLocation] = useState<UserLocation | null>(null);
   const [isClient, setIsClient] = useState(false);
   const [locationError, setLocationError] = useState<string | null>(null);
@@ -52,7 +53,7 @@ function CustomMap({ obrasT }: obrasProsp ) {
           setLocationError('La solicitud de geolocalización ha superado el tiempo de espera');
         }
       },
-      { timeout: 5000 }
+      { timeout: 2000 }
     );
   };
 
@@ -63,27 +64,26 @@ function CustomMap({ obrasT }: obrasProsp ) {
       if (!userLocation) {
         setUserLocation(defaultLocation);
       }
-    }, 5000);
+    }, 2500);
 
     requestLocation();
 
     return () => clearTimeout(timeoutId);
   }, [userLocation]);
 
-  const retryLocationRequest = () => {
-    requestLocation();
-  };
-
   if (!isClient || !userLocation) {
     return (
-      <div>
+      <div className="flex flex-col items-center justify-center gap-4 px-4 py-10">
         {locationError ? (
-          <div>
-            <p>{locationError}</p>
-            <button onClick={retryLocationRequest}>Intentar de nuevo</button>
+          <div className="items-center text-center text-red-500">
+            <p className="font-semibold">{locationError}</p>
+            <p>Se le redirigirá a una ubicación predeterminada...</p>
+            <Loader />
           </div>
         ) : (
-          <p>Esperando la ubicación del usuario...</p>
+          <div className="text-center text-gray-700">
+            <p className="font-semibold">Esperando la ubicación del usuario...</p>
+          </div>
         )}
       </div>
     );

@@ -1,6 +1,6 @@
 import { Feature, Polygon, LineString } from 'geojson';
 import { useState } from 'react';
-import { FaMapMarkerAlt } from 'react-icons/fa';
+import { FaRoad, FaBuilding } from 'react-icons/fa';
 import { Marker, Source, Layer } from 'react-map-gl/maplibre';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -20,10 +20,8 @@ const LocationObras: React.FC<{ obra: Obra }> = ({ obra }) => {
   const [selectedMarker, setSelectedMarker] = useState<string | null>(null);
   const [showDetails, setShowDetails] = useState<boolean>(false);
 
-  // Determinar el tipo de obra
   const typeObra = obra.projectType === 'Superficie' ? 'Polygon' : 'LineString';
 
-  // Calcular el centroide de las coordenadas
   const calculateCentroid = (coordinates: number[][]): { longitude: number; latitude: number } => {
     let sumLat = 0;
     let sumLon = 0;
@@ -38,49 +36,54 @@ const LocationObras: React.FC<{ obra: Obra }> = ({ obra }) => {
       longitude: sumLon / coordinates.length,
     };
   };
+  const calculateMitad = (coordinates: number[][]): { longitude: number; latitude: number } => {
+    
+    return {
+      latitude: coordinates[(coordinates.length)/2][1],
+      longitude: coordinates[(coordinates.length)/2][0],
+    };
+  }
 
-  const centroid = calculateCentroid(obra.points);
+  const centroid = obra.projectType === 'Superficie' ? calculateCentroid(obra.points) : calculateMitad(obra.points);
 
-  // Configuración de la capa
   const layerConfig =
     typeObra === 'Polygon'
       ? {
-          id: `polygon-layer-${obra.id}`,
-          type: 'fill' as 'fill',
-          paint: {
-            'fill-color': '#088ff5',
-            'fill-opacity': 0.5,
-            'fill-outline-color': '#000000',
-          },
-        }
+        id: `polygon-layer-${obra.id}`,
+        type: 'fill' as 'fill',
+        paint: {
+          'fill-color': '#088ff5',
+          'fill-opacity': 0.5,
+          'fill-outline-color': '#000000',
+        },
+      }
       : {
-          id: `line-layer-${obra.id}`,
-          type: 'line' as 'line',
-          paint: {
-            'line-color': '#FF0000',
-            'line-width': 5,
-          },
-        };
+        id: `line-layer-${obra.id}`,
+        type: 'line' as 'line',
+        paint: {
+          'line-color': '#14437F',
+          'line-width': 5,
+        },
+      };
 
-  // Datos GeoJSON con tipo dinámico
   const geoJsonData: Feature<Polygon | LineString> =
     typeObra === 'Polygon'
       ? {
-          type: 'Feature',
-          properties: {},
-          geometry: {
-            type: 'Polygon',
-            coordinates: [obra.points], // Para Polygon, las coordenadas son un arreglo de arreglos
-          },
-        }
+        type: 'Feature',
+        properties: {},
+        geometry: {
+          type: 'Polygon',
+          coordinates: [obra.points],
+        },
+      }
       : {
-          type: 'Feature',
-          properties: {},
-          geometry: {
-            type: 'LineString',
-            coordinates: obra.points, // Para LineString, las coordenadas son un arreglo simple
-          },
-        };
+        type: 'Feature',
+        properties: {},
+        geometry: {
+          type: 'LineString',
+          coordinates: obra.points,
+        },
+      };
 
   const handleMarkerClick = () => {
     setSelectedMarker('marker');
@@ -93,7 +96,6 @@ const LocationObras: React.FC<{ obra: Obra }> = ({ obra }) => {
 
   return (
     <>
-      {/* Marker */}
       <Marker
         key={`centroid-marker-${obra.cui}`}
         longitude={centroid.longitude}
@@ -101,11 +103,16 @@ const LocationObras: React.FC<{ obra: Obra }> = ({ obra }) => {
         onClick={handleMarkerClick}
       >
         <div className="relative">
-          <FaMapMarkerAlt className="text-[#FF0000] text-4xl z-0" />
+
+          {obra.projectType === "Superficie" ? (
+            <FaBuilding className="text-[#DC2626] text-xl z-0" />
+          ) : obra.projectType === "Carretera" ? (
+            <FaRoad className="text-[#F77717] text-xl z-0" />
+          ) : null}
+
           <div
-            className={`absolute top-0 left-0 ${
-              selectedMarker === 'marker' && showDetails ? 'block' : 'hidden'
-            } z-50`}
+            className={`absolute top-0 left-0 ${selectedMarker === "marker" && showDetails ? "block" : "hidden"
+              } z-50`}
           >
             <div className="bg-gradient-to-r from-gray-900 to-black text-white p-4 rounded-lg shadow-lg w-max-6x1 w-[300px] mx-auto text-justify">
               <h2 className="text-[14px] font-extrabold mb-4 text-center">Detalles de la obra</h2>
@@ -143,7 +150,6 @@ const LocationObras: React.FC<{ obra: Obra }> = ({ obra }) => {
         </div>
       </Marker>
 
-      {/* GeoJSON Source y Layer */}
       <Source id={`source-${obra.id}`} type="geojson" data={geoJsonData}>
         <Layer {...layerConfig} />
       </Source>

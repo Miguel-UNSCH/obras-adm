@@ -15,11 +15,11 @@ async function Page() {
   }));
   
   return (
-    <div className="h-full w-full flex flex-col md:flex-row gap-4">
+    <div className="h-full flex flex-col md:flex-row gap-4">
       <div className="p-4 rounded-xl bg-gradient-to-b from-[#ececec] dark:from-[#2D2D2D] dark:to-[#2D2D2D] to-[#eba77a] w-full md:w-1/4">
         <SideDashboard obrasT={obras} />
       </div>
-      <div className="flex-1 rounded-xl overflow-hidden">
+      <div className="flex-1 rounded-xl w-full h-full overflow-hidden">
         <CustomMap obrasT={queryResult}/>
       </div>
     </div>

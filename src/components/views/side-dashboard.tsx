@@ -39,10 +39,11 @@ function SideDashboard({ obrasT }: obrasProsp) {
 
   return (
     <div className="flex flex-col gap-4 h-full w-full">
-      <div className="text-center  text-red-500 dark:text-white bg-clip-text font-extrabold text-4xl">
-        <span>Obras por administración directa</span>
+      <div className="items-center text-center  text-red-500 dark:text-white bg-clip-text font-extrabold text-4xl sm:text-xl md:text-2xl lg:text-4xl">
+        <span>Obras por </span>
+        <span className="sm:text-lg md:text-xl lg:text-4xl">administración </span>
+        <span>directa</span>
       </div>
-
       <form onSubmit={handleSearch} className="flex flex-col gap-4">
         <Input
           placeholder="Buscar por código CUI, descripción o residente"

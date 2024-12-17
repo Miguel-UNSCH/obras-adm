@@ -26,7 +26,6 @@ export async function getObras() {
 
 export async function getProyectos() {
   try {
-
     const result = await query(
       `SELECT 
         app.nombre, 
@@ -84,6 +83,15 @@ export async function guardarObra(
         points: JSON.stringify(points), // Asegurarse de que 'points' sea un arreglo válido
         propietario_id,
       },
+    });
+
+    await db.notification.create({
+      data: {
+        title: "Registro de nueva " + (projectType === "Superficie"? "Construcción":"Carretera") ,
+        description: name,
+        status: "actualizado",
+        priority: "media",
+      }
     });
 
     // Retornar éxito
