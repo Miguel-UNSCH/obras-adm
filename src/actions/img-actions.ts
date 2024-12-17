@@ -2,17 +2,16 @@
 
 import db from "@/lib/database";
 
-export async function getImg(id: string, day: string) {
+export async function getDaysWorked(id: string) {
   try {
-    // Filtrar las imágenes por propietario_id
-    const result = await db.image.findMany({
+    // Filtrar las imágenes por propietario_id y la fecha asignada
+    const resultados = await db.image.findMany({
       where: {
-        propietario_id: id,  // Filtrar por propietario_id
+        propietario_id: id,
       },
     });
 
-    // Mapear los resultados para incluir propietario_id y otras propiedades
-    const obras = result.map((resul) => ({
+    const diasTrabajados = resultados.map((resul) => ({
       id: resul.id,
       url: resul.url,
       latitud: resul.latitud,
@@ -23,10 +22,9 @@ export async function getImg(id: string, day: string) {
         updatedAt.setUTCHours(0, 0, 0, 0); // Ajustar la hora a medianoche en UTC
         return updatedAt.toISOString().split("T")[0] + "T00:00"; // Formato "YYYY-MM-DDT00:00"
       })(),
-      propietario_id: resul.propietario_id,  // Asegurarse de incluir propietario_id
     }));
 
-    return obras;
+    return diasTrabajados;
   } catch (error) {
     console.error("Error al obtener las obras: ", error);
     return null;

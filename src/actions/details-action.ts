@@ -6,7 +6,7 @@ export async function getDetalles(id: string) {
   try {
     const result = await db.coordinates.findMany();
 
-    // Buscar la obra con el CUI proporcionado
+    // Buscar la obra con el id proporcionado
     const obraEncontrada = result.find((obra) => obra.id === id);
 
     // Si no se encuentra la obra, devolver null

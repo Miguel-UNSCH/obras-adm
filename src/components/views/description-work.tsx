@@ -13,7 +13,7 @@ interface Obra {
 const DescriptionWork: React.FC<{ obra: Obra }> = ({ obra }) => {
 
     return (
-        <div className="p-6 bg-white dark:bg-gray-800 shadow-lg rounded-xl space-y-6">
+        <div className="flex flex-col justify-center h-full p-6 bg-white dark:bg-gray-800 shadow-lg rounded-xl space-y-6">
             <h2 className="font-semibold text-gray-900 dark:text-white text-justify">
                 {obra.name}
             </h2>

@@ -29,7 +29,7 @@ function CalendarCustom({ Daysworked, setDay }: DayProps) {
           Daysworked: trabajadasDates,
         }}
         modifiersClassNames={{
-          Daysworked: "bg-blue-500 text-white",
+          Daysworked: "bg-green-500 text-white",
         }}
       />
     </div>

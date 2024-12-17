@@ -10,27 +10,33 @@ interface Imgs {
   longitud: string | null;
   date: Date | null;
   update: string | null;
-  propietario_id: string;
 }
 
 interface ImagesContainerProps {
   imgs: Imgs[] | null;
-  setDay: React.Dispatch<React.SetStateAction<string>>; // Propiedad para manejar el día seleccionado
 }
 
-const ImagesContainer: React.FC<ImagesContainerProps> = ({ imgs, setDay }) => {
+// Obtener la fecha actual en formato "YYYY-MM-DD"
+const today = new Date().toISOString().split("T")[0];
+
+const ImagesContainer: React.FC<ImagesContainerProps> = ({ imgs }) => {
+  const [day, setDay] = useState<string>(today); // Día actual como valor por defecto
+
   // Aseguramos que dayT siempre sea un array de strings y eliminamos valores null
   const dayT = imgs?.map((result) => result.update).filter((update): update is string => update !== null) ?? [];
+
+  // Filtramos las imágenes que coinciden con el día seleccionado
+  const onlyDay = imgs?.filter((result) => result.update === (day + "T00:00")) ?? [];
 
   if (!imgs) return <div>No hay imágenes disponibles.</div>;
 
   return (
     <div className="h-full flex flex-col space-y-4">
-      <div className="flex-1 bg-gradient-to-tr from-[#FFCEB7] dark:from-[#0F172A] dark:to-[#065F46] to-[#E3D8D6] rounded-3xl shadow-xl overflow-hidden">
+      <div className="flex-1 bg-gradient-to-tr from-[#FFCEB7] dark:from-[#0F172A] dark:to-[#065F46] to-[#E3D8D6] rounded-3xl overflow-hidden">
         <CalendarCustom Daysworked={dayT} setDay={setDay} />
       </div>
-      <div className="flex-1 overflow-hidden">
-        <ImageWork imgs={imgs} />
+      <div className="flex-1 p-2 rounded-3xl bg-white dark:bg-gray-800 shadow-lg overflow-y-auto">
+        <ImageWork imgs={onlyDay} />
       </div>
     </div>
   );

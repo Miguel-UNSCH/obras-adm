@@ -33,7 +33,7 @@ const DetallesContainer: React.FC<{ obra: Obra }> = ({ obra }) => {
             <div className="flex-1 rounded-3xl overflow-hidden">
                 <MapDrawingPolygon obra={mapDetails} />
             </div>
-            <div className="flex-1 p-2 rounded-3xl overflow-hidden overflow-y-auto">
+            <div className="flex-1 rounded-3xl overflow-hidden">
                 <DescriptionWork obra={descriptionDetails} />
             </div>
         </div>

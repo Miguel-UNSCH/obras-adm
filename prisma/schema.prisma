@@ -46,25 +46,36 @@ model VerificationToken {
 }
 
 model Coordinates {
-  id            String  @id @default(cuid())
-  propietario_id   String
-  resident      String
-  projectType   String
-  cui           String
-  name          String
-  areaOrLength  String?
-  points        String
+  id             String   @id @default(cuid())
+  propietario_id String
+  resident       String
+  projectType    String
+  cui            String
+  name           String
+  areaOrLength   String?
+  points         String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model Image {
+  id             String    @id @default(cuid())
+  url            String?
+  latitud        String?
+  longitud       String?
+  propietario_id String
+  date           DateTime?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model Image {
-  id           String @id @default(cuid())
-  url          String? 
-  latitud      String?
-  longitud     String?
-  propietario_id  String
-  date         DateTime?
+model Notification {
+  id          String @id @default(cuid())
+  title       String
+  description String
+  status      String
+  priority    String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
