@@ -4,7 +4,12 @@ import db from "@/lib/database";
 
 export async function getNotification() {
     try {
-        const result = await db.notification.findMany();
+        const result = await db.notification.findMany({
+            take: 20,
+            orderBy: {
+                updatedAt: "desc",
+            },
+        });
 
         const resultados = result.map((resul) => ({
             id: resul.id,
