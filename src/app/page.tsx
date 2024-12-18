@@ -7,7 +7,7 @@ import Link from "next/link";
 export default function LandingPage() {
   return (
     <div className="bg-bgColor h-screen flex flex-col">
-      <nav className="container mx-auto px-4 py-6 flex items-center justify-between">
+      <nav className="absolute container mx-auto px-4 py-6 flex items-center justify-between">
         <div className="flex items-center">
           <div className="flex flex-row mr-2">
             <Image
@@ -29,34 +29,29 @@ export default function LandingPage() {
         <ModeChange />
       </nav>
       <main className="container mx-auto px-4 flex-1 flex flex-col gap-5 md:flex-row items-center justify-center">
-        <div className="md:w-1/2 mb-10 md:mb-0">
-          <h1 className="text-5xl md:text-5xl font-bold text-foreground leading-tight mb-6">
+        <div className="md:w-1/2 md:mb-0 space-y-6">
+          <h1 className="text-5xl md:text-5xl font-bold text-foreground leading-tight gap-4 mb-6">
             ¡Bienvenido a{" "}
+            <br />
             <span className="inline-block text-green-500">
-              SysInv
+              GeoObras
             </span>!
-            <br />
-            <span className="relative">Tu Asistente para la Gestión</span>
-            <br />
-            de Geolocalización que
-            <br />
-            <span className="text-white bg-green-400 rounded-sm inline-block">Simplifica</span> tu Trabajo
           </h1>
           <p className="text-lg text-card-foreground mb-8">
-            Te ofrecemos una solución eficiente para gestionar. Organiza tus productos de manera sencilla.
+            Tu Asistente para la Gestión de Geolocalización que Simplifica tu Trabajo
             <span className="text-orange-500 font-semibold"> ¡Empieza a mejorar tu flujo de trabajo hoy mismo!</span>
           </p>
           <div className="flex space-x-4">
-            <Link href={'/dashboard'} className="bg-green-500 text-white px-8 py-3 rounded-xl font-semibold hover:bg-green-600 transition-all duration-300 flex items-center">
+            <Link href={'/dashboard'} className="bg-green-500 text-white px-8 py-3 rounded-xl font-semibold hover:bg-green-600 transition-all duration-300 flex items-center mt-10">
               Iniciar sesión
               <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
-            <button className="border border-green-500 text-green-500 px-8 py-3 rounded-xl font-semibold hover:bg-green-50 transition-colors duration-300 flex items-center">
+            {/* <button className="border border-green-500 text-green-500 px-8 py-3 rounded-xl font-semibold hover:bg-green-50 transition-colors duration-300 flex items-center">
               <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 22c-5.523 0-10-4.477-10-10S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm-2-13v6l5-3-5-3z" />
               </svg>
               Tutorial de uso
-            </button>
+            </button> */}
           </div>
         </div>
         <div className="md:w-1/2 relative hidden sm:block dark:hidden">

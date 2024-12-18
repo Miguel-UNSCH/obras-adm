@@ -9,6 +9,7 @@ import * as turf from "@turf/turf";
 import toasterCustom from "@/components/toaster-custom";
 import { toast } from "sonner";
 
+// Define interfaces
 interface ObrasProps {
   nombre: string;
   codigo_CUI: string;
@@ -29,6 +30,7 @@ function ObrasContainer({ obras }: ObrasContainerProps) {
   const [selectedOption, setSelectedOption] = useState<string>("");
   const [points, setPoints] = useState<[number, number][]>([]);
   const [projectType, setProjectType] = useState<string>("");
+  const [showConfirmationModal, setShowConfirmationModal] = useState<boolean>(false);
 
   const options: OptionProps[] = useMemo(
     () => obras.map((obra) => ({ value: obra.nombre, label: obra.nombre })),
@@ -36,21 +38,33 @@ function ObrasContainer({ obras }: ObrasContainerProps) {
   );
 
   const handleSaveClick = async () => {
-    // Verificar si se seleccionó una opción en el select
+    // Validar primero los campos requeridos antes de mostrar el modal
     if (!selectedOption) {
       toasterCustom(400, "Por favor, selecciona una obra antes de continuar.");
       return;
     }
 
-    // Verificar si hay al menos 3 puntos únicos
     if (points.length < 3) {
       toasterCustom(400, "Por favor, introduce al menos 3 puntos para continuar.");
       return;
     }
 
+    // Si la validación es exitosa, mostrar el modal de confirmación
+    handleShowConfirmationModal();
+  };
+
+  const handleShowConfirmationModal = () => {
+    setShowConfirmationModal(true); // Mostrar el modal de confirmación
+  };
+
+  const handleCloseConfirmationModal = () => {
+    setShowConfirmationModal(false); // Cerrar el modal de confirmación
+  };
+
+  const handleConfirmSave = async () => {
     const coordinates = [...points];
 
-    // Asegúrate de cerrar el polígono
+    // Asegúrate de cerrar el polígono si no está cerrado
     if (!turf.booleanEqual(turf.point(coordinates[0]), turf.point(coordinates[coordinates.length - 1]))) {
       coordinates.push(coordinates[0]);
     }
@@ -93,7 +107,6 @@ function ObrasContainer({ obras }: ObrasContainerProps) {
     }
 
     try {
-      // Validar antes de enviar
       if (!obraSeleccionada || !coordinates || !areaOrLength) {
         toasterCustom(400, "Por favor complete todos los campos requeridos.");
         return;
@@ -117,21 +130,21 @@ function ObrasContainer({ obras }: ObrasContainerProps) {
       toast.dismiss();
       toasterCustom(data.status, data.message);
 
-      // Recargar la página si se guardó correctamente
       if (data.status === 200) {
         setTimeout(() => {
-          window.location.reload(); // Actualiza la página después de un breve retraso
-        }, 1000); // Opcional: espera 1 segundo para mostrar el mensaje antes de recargar
+          window.location.reload(); // Recarga la página después de un breve retraso
+        }, 1000); // Opcional: espera 1 segundo antes de recargar
       }
     } catch (error) {
       toasterCustom(500, "Error al procesar la solicitud.");
       console.error("Error al guardar los datos:", error);
     }
+
+    handleCloseConfirmationModal(); // Cerrar el modal después de guardar
   };
 
   return (
     <div className="grid gap-4">
-
       <div className="grid sm:grid-row-1 md:grid-cols-[1fr_auto] items-center gap-4">
         <Select onValueChange={setSelectedOption}>
           <SelectTrigger className="w-full">
@@ -145,14 +158,35 @@ function ObrasContainer({ obras }: ObrasContainerProps) {
             ))}
           </SelectContent>
         </Select>
-        <ButtonSave onClick={handleSaveClick} />
+        <ButtonSave onClick={handleSaveClick} /> {/* Mostrar el modal al hacer clic */}
       </div>
 
       <div className="rounded-3xl overflow-hidden w-full h-[85vh] shadow-lg">
         <NewCoordinates points={points} setPoints={setPoints} setProjectType={setProjectType} />
       </div>
-    </div>
 
+      {showConfirmationModal && (
+        <div className="fixed inset-0 flex justify-center items-center bg-gray-600 bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <h2 className="text-lg font-semibold">¿Está seguro de que desea guardar?</h2>
+            <div className="mt-4 flex justify-between">
+              <button
+                className="bg-blue-500 text-white px-4 py-2 rounded"
+                onClick={handleConfirmSave}
+              >
+                Sí
+              </button>
+              <button
+                className="bg-red-500 text-white px-4 py-2 rounded"
+                onClick={handleCloseConfirmationModal}
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 
