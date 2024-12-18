@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import 'maplibre-gl/dist/maplibre-gl.css';
-import Map, { NavigationControl } from 'react-map-gl/maplibre';
+import 'mapbox-gl/dist/mapbox-gl.css';
+import Map, { NavigationControl } from 'react-map-gl';
 import LocationObras from './location-works';
 import Loader from './wait-custom';
 
@@ -27,6 +27,9 @@ interface UserLocation {
 }
 
 function CustomMap({ obrasT }: obrasProsp) {
+
+  const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN
+
   const [userLocation, setUserLocation] = useState<UserLocation | null>(null);
   const [isClient, setIsClient] = useState(false);
   const [locationError, setLocationError] = useState<string | null>(null);
@@ -91,13 +94,14 @@ function CustomMap({ obrasT }: obrasProsp) {
 
   return (
     <Map
+      mapboxAccessToken={token}
       initialViewState={{
         longitude: userLocation ? userLocation.longitude : defaultLocation.longitude,
         latitude: userLocation ? userLocation.latitude : defaultLocation.latitude,
         zoom: 13,
       }}
       attributionControl={false}
-      mapStyle="https://api.maptiler.com/maps/topo-v2/style.json?key=qHY98vxGerd5lTUUPwyF"
+      mapStyle={'mapbox://styles/mapbox/standard'}
     >
       <NavigationControl
         position="bottom-right"

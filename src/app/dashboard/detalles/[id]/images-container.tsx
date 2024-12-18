@@ -28,8 +28,6 @@ const ImagesContainer: React.FC<ImagesContainerProps> = ({ imgs }) => {
   // Filtramos las imágenes que coinciden con el día seleccionado
   const onlyDay = imgs?.filter((result) => result.update === (day + "T00:00")) ?? [];
 
-  if (!imgs) return <div>No hay imágenes disponibles.</div>;
-
   return (
     <div className="h-full flex flex-col space-y-4">
       <div className="flex-1 bg-gradient-to-tr from-[#FFCEB7] dark:from-[#0F172A] dark:to-[#065F46] to-[#E3D8D6] rounded-3xl overflow-hidden">

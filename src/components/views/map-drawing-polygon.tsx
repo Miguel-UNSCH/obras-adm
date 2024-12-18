@@ -1,7 +1,7 @@
 "use client";
 
-import 'maplibre-gl/dist/maplibre-gl.css';
-import Map, { NavigationControl, Source, Layer } from 'react-map-gl/maplibre';
+import 'mapbox-gl/dist/mapbox-gl.css';
+import Map, { NavigationControl, Source, Layer } from 'react-map-gl';
 import { Feature, Polygon, LineString } from 'geojson';
 
 
@@ -13,7 +13,7 @@ interface Obra {
 
 
 const CustomMap: React.FC<{ obra: Obra }> = ({ obra }) => {
-
+  const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN
   // Determinar el tipo de obra
   const typeObra = obra.projectType === 'Superficie' ? 'Polygon' : 'LineString';
 
@@ -74,13 +74,14 @@ const CustomMap: React.FC<{ obra: Obra }> = ({ obra }) => {
 
   return (
     <Map
+      mapboxAccessToken={token}
       initialViewState={{
         longitude: centroid.longitude,
         latitude: centroid.latitude,
         zoom: 14,
       }}
       attributionControl={false}
-      mapStyle="https://api.maptiler.com/maps/topo-v2/style.json?key=qHY98vxGerd5lTUUPwyF"
+      mapStyle={'mapbox://styles/mapbox/standard'}
     >
       <NavigationControl position="bottom-right" style={{
         display: "flex",
