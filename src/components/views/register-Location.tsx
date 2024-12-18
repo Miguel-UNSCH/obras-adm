@@ -14,7 +14,7 @@ interface UserLocation {
 }
 
 interface NewCoordinatesProps {
-  points: [number, number][]; // Puntos que se recolectan en el mapa
+  points: [number, number][];
   setPoints: React.Dispatch<React.SetStateAction<[number, number][]>>; // Función para actualizar los puntos en el componente padre
   setProjectType: React.Dispatch<React.SetStateAction<string>>; // Función para actualizar el tipo de proyecto en el componente padre
 }

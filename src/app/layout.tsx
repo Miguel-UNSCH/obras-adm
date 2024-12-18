@@ -18,7 +18,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Obras",
+  title: "Geolocalización",
   description: "Sistema gestor en geolocalización",
 };
 

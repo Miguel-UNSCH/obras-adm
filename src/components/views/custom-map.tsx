@@ -84,7 +84,7 @@ function CustomMap({ obrasT }: obrasProsp) {
             <Loader />
           </div>
         ) : (
-          <div className="text-center text-gray-700">
+          <div className="text-center text-gray-700 dark:text-stone-400">
             <p className="font-semibold">Esperando la ubicación del usuario...</p>
           </div>
         )}
