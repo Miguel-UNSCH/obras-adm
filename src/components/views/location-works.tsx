@@ -37,10 +37,10 @@ const LocationObras: React.FC<{ obra: Obra }> = ({ obra }) => {
     };
   };
   const calculateMitad = (coordinates: number[][]): { longitude: number; latitude: number } => {
-    
+    const midIndex = Math.floor(coordinates.length / 2);
     return {
-      latitude: coordinates[(coordinates.length)/2][1],
-      longitude: coordinates[(coordinates.length)/2][0],
+      latitude: coordinates[midIndex][1],
+      longitude: coordinates[midIndex][0],
     };
   }
 

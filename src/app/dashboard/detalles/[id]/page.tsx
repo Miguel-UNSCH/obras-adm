@@ -5,6 +5,7 @@ import ImagesContainer from './images-container';
 import { getDetalles } from '@/actions/details-action';
 import { getDaysWorked } from '@/actions/img-actions';
 import { useEffect, useState } from 'react';
+import Loader from '@/components/views/wait-custom';
 
 interface Obra {
   id: string;
@@ -46,9 +47,11 @@ function Page() {
 
     fetchData();
   }, [id]);
-  
 
-  if (!obra) return <div>Cargando...</div>;
+
+  if (!obra) return <div className='text-center text-cyan-900 dark:text-teal-400 font-semibold'>
+    Cargando...
+  </div>;
 
   return (
     <div className="h-full grid grid-cols-1 md:grid-cols-2 gap-4">

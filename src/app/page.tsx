@@ -20,8 +20,8 @@ export default function LandingPage() {
             <Image
               src='/logos/inicio_oscuro.png'
               alt="logo"
-              width={100}
-              height={100}
+              width={300}
+              height={200}
               className="cursor-pointer hidden dark:block"
             />
           </div>

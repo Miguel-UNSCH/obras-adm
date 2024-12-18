@@ -3,7 +3,7 @@ import CustomMap from "@/components/views/custom-map";
 import SideDashboard from "@/components/views/side-dashboard";
 
 async function Page() {
-  
+
   const queryResult = await getObras();
 
   const obras = queryResult.map((row) => ({
@@ -13,16 +13,19 @@ async function Page() {
     resident: row.resident,
     projectType: row.projectType,
   }));
-  
+
   return (
-    <div className="h-full flex flex-col md:flex-row gap-4">
-      <div className="p-4 rounded-xl bg-gradient-to-b from-[#ececec] dark:from-[#2D2D2D] dark:to-[#2D2D2D] to-[#eba77a] w-full md:w-1/4">
+    <div className="grid grid-rows-[auto_1fr] md:grid-rows-1 md:grid-cols-[1fr_3fr] h-full gap-4">
+
+      <div className="p-4 rounded-xl bg-gradient-to-b from-[#ececec] dark:from-[#2D2D2D] dark:to-[#2D2D2D] to-[#eba77a]">
         <SideDashboard obrasT={obras} />
       </div>
-      <div className="flex-1 rounded-xl w-full h-full overflow-hidden">
-        <CustomMap obrasT={queryResult}/>
+
+      <div className="rounded-xl overflow-hidden h-64 md:h-auto">
+        <CustomMap obrasT={queryResult} />
       </div>
     </div>
+
   );
 }
 

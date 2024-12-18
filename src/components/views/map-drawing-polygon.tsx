@@ -38,9 +38,9 @@ const CustomMap: React.FC<{ obra: Obra }> = ({ obra }) => {
         id: `polygon-layer-${obra.id}`,
         type: 'fill' as 'fill',
         paint: {
-          'fill-color': '#088ff5',
+          'fill-color': '#E27373',
           'fill-opacity': 0.5,
-          'fill-outline-color': '#000000',
+          'fill-outline-color': '#FF0000',
         },
       }
       : {
@@ -60,7 +60,7 @@ const CustomMap: React.FC<{ obra: Obra }> = ({ obra }) => {
         properties: {},
         geometry: {
           type: 'Polygon',
-          coordinates: [obra.points], // Para Polygon, las coordenadas son un arreglo de arreglos
+          coordinates: [obra.points],
         },
       }
       : {
@@ -68,7 +68,7 @@ const CustomMap: React.FC<{ obra: Obra }> = ({ obra }) => {
         properties: {},
         geometry: {
           type: 'LineString',
-          coordinates: obra.points, // Para LineString, las coordenadas son un arreglo simple
+          coordinates: obra.points,
         },
       };
 
