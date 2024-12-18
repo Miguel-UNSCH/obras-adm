@@ -3,7 +3,9 @@ import styled from 'styled-components';
 
 const Loader = () => {
   return (
+
     <StyledWrapper>
+
       <div className="loader">
         <div className="box box-1">
           <div className="side-left" />
@@ -26,24 +28,32 @@ const Loader = () => {
           <div className="side-top" />
         </div>
       </div>
+
     </StyledWrapper>
   );
 }
 
 const StyledWrapper = styled.div`
-  /* 3D tower loader made by: csozi | Website: www.csozi.hu*/
-
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  width: 100%;
+  
   .loader {
-    scale: 3;
-    height: 50px;
-    width: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 20vw; /* Establecemos un ancho relativo al tamaño de la pantalla */
+    height: 20vw; /* Ajustamos la altura a la misma proporción */
+    max-width: 180px; /* Limitamos el tamaño máximo */
+    max-height: 180px; /* Limitamos el tamaño máximo */
+    position: relative; /* Para los elementos absolutos */
   }
 
   .box {
-    position: relative;
+    position: absolute;
     opacity: 0;
-    top: 40px;
-    left: 60px;
   }
 
   .side-left {
@@ -98,34 +108,34 @@ const StyledWrapper = styled.div`
     0% {
       z-index: 20;
       opacity: 0;
-      translate: -20px -6px;
+      transform: translate(-20px, -6px);
     }
 
     20% {
       z-index: 10;
       opacity: 1;
-      translate: 0px 0px;
+      transform: translate(0px, 0px);
     }
 
     40% {
       z-index: 9;
-      translate: 0px 4px;
+      transform: translate(0px, 4px);
     }
 
     60% {
       z-index: 8;
-      translate: 0px 8px;
+      transform: translate(0px, 8px);
     }
 
     80% {
       z-index: 7;
       opacity: 1;
-      translate: 0px 12px;
+      transform: translate(0px, 12px);
     }
 
     100% {
       z-index: 5;
-      translate: 0px 30px;
+      transform: translate(0px, 30px);
       opacity: 0;
     }
   }
@@ -134,36 +144,45 @@ const StyledWrapper = styled.div`
     0% {
       z-index: 20;
       opacity: 0;
-      translate: 20px -6px;
+      transform: translate(20px, -6px);
     }
 
     20% {
       z-index: 10;
       opacity: 1;
-      translate: 0px 0px;
+      transform: translate(0px, 0px);
     }
 
     40% {
       z-index: 9;
-      translate: 0px 4px;
+      transform: translate(0px, 4px);
     }
 
     60% {
       z-index: 8;
-      translate: 0px 8px;
+      transform: translate(0px, 8px);
     }
 
     80% {
       z-index: 7;
       opacity: 1;
-      translate: 0px 12px;
+      transform: translate(0px, 12px);
     }
 
     100% {
       z-index: 5;
-      translate: 0px 30px;
+      transform: translate(0px, 30px);
       opacity: 0;
     }
-  }`;
+  }
+
+  /* Media query para pantallas grandes */
+  @media (min-width: 1024px) {
+    .loader {
+      width: 120px; /* Ajustamos el tamaño para pantallas grandes */
+      height: 120px;
+    }
+  }
+`;
 
 export default Loader;

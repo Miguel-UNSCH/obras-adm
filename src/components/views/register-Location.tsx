@@ -1,5 +1,3 @@
-"use client";
-
 import 'mapbox-gl/dist/mapbox-gl.css'
 import Map, { Marker, NavigationControl, Source, Layer, MapLayerMouseEvent } from 'react-map-gl';
 import { useState, useCallback, useEffect } from 'react';
@@ -15,8 +13,8 @@ interface UserLocation {
 
 interface NewCoordinatesProps {
   points: [number, number][];
-  setPoints: React.Dispatch<React.SetStateAction<[number, number][]>>; // Función para actualizar los puntos en el componente padre
-  setProjectType: React.Dispatch<React.SetStateAction<string>>; // Función para actualizar el tipo de proyecto en el componente padre
+  setPoints: React.Dispatch<React.SetStateAction<[number, number][]>>;
+  setProjectType: React.Dispatch<React.SetStateAction<string>>;
 }
 
 function NewCoordinates({ points, setPoints, setProjectType }: NewCoordinatesProps) {
@@ -27,9 +25,8 @@ function NewCoordinates({ points, setPoints, setProjectType }: NewCoordinatesPro
   const defaultLocation: UserLocation = { latitude: -13.160441, longitude: -74.225832 };
   const [localPoints, setLocalPoints] = useState<[number, number][]>(points);
   const [projectType, setProjectTypeState] = useState<string>("Superficie");
-  const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN
+  const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
-  // Función para actualizar los datos de la geometría (polígono o línea)
   const updateGeometryData = useCallback((points: [number, number][], projectType: string) => {
     if (projectType === 'Superficie' && points.length >= 3) {
       setPolygonData({
@@ -40,7 +37,7 @@ function NewCoordinates({ points, setPoints, setProjectType }: NewCoordinatesPro
         },
         properties: {},
       });
-      setLineData(null); // Elimina los datos de la línea cuando se cambia a polígono
+      setLineData(null);
     } else if (projectType === 'Carretera' && points.length >= 2) {
       setLineData({
         type: 'Feature',
@@ -50,23 +47,20 @@ function NewCoordinates({ points, setPoints, setProjectType }: NewCoordinatesPro
         },
         properties: {},
       });
-      setPolygonData(null); // Elimina los datos del polígono cuando se cambia a línea
+      setPolygonData(null);
     } else {
       setPolygonData(null);
       setLineData(null);
     }
   }, []);
 
-  // Función para manejar el clic en el mapa y agregar puntos
   const handleMapClick = useCallback((event: MapLayerMouseEvent) => {
     const { lng, lat } = event.lngLat;
 
     setLocalPoints((prevPoints) => {
       const newPoints: [number, number][] = [...prevPoints, [lng, lat]];
 
-      // Verificar el tipo de proyecto
       if (projectType === 'Carretera' && newPoints.length >= 2) {
-        // Solo se debe actualizar la línea si hay al menos 2 puntos
         setLineData({
           type: 'Feature',
           geometry: {
@@ -75,18 +69,17 @@ function NewCoordinates({ points, setPoints, setProjectType }: NewCoordinatesPro
           },
           properties: {},
         });
-        setPolygonData(null); // Elimina el polígono si es línea
+        setPolygonData(null);
       } else if (projectType === 'Superficie' && newPoints.length >= 3) {
-        // Solo se debe actualizar el polígono si hay al menos 3 puntos
         setPolygonData({
           type: 'Feature',
           geometry: {
             type: 'Polygon',
-            coordinates: [newPoints.concat([newPoints[0]])], // Cierra el polígono
+            coordinates: [newPoints.concat([newPoints[0]])],
           },
           properties: {},
         });
-        setLineData(null); // Elimina la línea si es polígono
+        setLineData(null);
       }
 
       return newPoints;
@@ -94,10 +87,8 @@ function NewCoordinates({ points, setPoints, setProjectType }: NewCoordinatesPro
   }, [projectType]);
 
   useEffect(() => {
-    // Al cambiar el tipo de proyecto, actualizamos la geometría
     updateGeometryData(localPoints, projectType);
   }, [projectType, localPoints, updateGeometryData]);
-
 
   useEffect(() => {
     setPoints(localPoints);
@@ -112,8 +103,8 @@ function NewCoordinates({ points, setPoints, setProjectType }: NewCoordinatesPro
   };
 
   const handleProjectTypeChange = (newType: string) => {
-    setProjectTypeState(newType);  // Actualiza el estado local
-    setProjectType(newType);  // Actualiza el estado en el componente padre
+    setProjectTypeState(newType);
+    setProjectType(newType);
   };
 
   const requestLocation = useCallback(() => {
@@ -174,9 +165,20 @@ function NewCoordinates({ points, setPoints, setProjectType }: NewCoordinatesPro
     );
   }
 
+  // Función para manejar el arrastre del marcador
+  const handleMarkerDragEnd = (index: number, event: any) => {
+    const { lng, lat } = event.lngLat;
+
+    setLocalPoints((prevPoints) => {
+      const updatedPoints = [...prevPoints];
+      updatedPoints[index] = [lng, lat]; // Actualiza la coordenada del marcador
+      updateGeometryData(updatedPoints, projectType);
+      return updatedPoints;
+    });
+  };
+
   return (
     <div className="relative w-full h-full">
-
       <div className='absolute top-4 left-4 z-10'>
         <ButtonBack onClick={handleRemoveLastPoint} />
       </div>
@@ -192,7 +194,6 @@ function NewCoordinates({ points, setPoints, setProjectType }: NewCoordinatesPro
           latitude: defaultLocation.latitude,
           zoom: 13,
         }}
-
         attributionControl={false}
         mapStyle={'mapbox://styles/mapbox/satellite-streets-v12'}
         onClick={handleMapClick}
@@ -209,7 +210,14 @@ function NewCoordinates({ points, setPoints, setProjectType }: NewCoordinatesPro
         />
 
         {localPoints.map(([lng, lat], index) => (
-          <Marker key={index} longitude={lng} latitude={lat} color="blue">
+          <Marker
+            key={index}
+            longitude={lng}
+            latitude={lat}
+            color="blue"
+            draggable
+            onDragEnd={(event) => handleMarkerDragEnd(index, event)} // Maneja el evento de arrastre
+          >
             <TbPointFilled size={20} />
           </Marker>
         ))}

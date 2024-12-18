@@ -13,11 +13,11 @@ interface Obra {
 const DescriptionWork: React.FC<{ obra: Obra }> = ({ obra }) => {
 
     return (
-        <div className="flex flex-col justify-center h-full p-6 bg-white dark:bg-gray-800 shadow-lg rounded-xl space-y-6">
-            <h2 className="font-semibold text-gray-900 dark:text-white text-justify">
+        <div className="grid grid-cols h-full p-6 gap-1 bg-white dark:bg-gray-800 shadow-lg rounded-xl">
+            <p className="font-bold text-gray-900 dark:text-white text-justify p-4 text-sm">
                 {obra.name}
-            </h2>
-            <div className="space-y-3">
+            </p>
+            <div className="grid grid-cols-1">
                 <div className="flex items-center space-x-3 text-gray-700 dark:text-gray-300">
                     <FaCogs className="text-lg text-blue-500" />
                     <p className="font-medium">Tipo de Proyecto:</p>

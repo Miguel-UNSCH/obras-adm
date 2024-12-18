@@ -14,7 +14,7 @@ interface Obra {
 
 const CustomMap: React.FC<{ obra: Obra }> = ({ obra }) => {
   const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN
-  // Determinar el tipo de obra
+
   const typeObra = obra.projectType === 'Superficie' ? 'Polygon' : 'LineString';
 
   const calculateCentroid = (coordinates: number[][]): { longitude: number; latitude: number } => {
@@ -31,7 +31,6 @@ const CustomMap: React.FC<{ obra: Obra }> = ({ obra }) => {
 
   const centroid = calculateCentroid(obra.points);
 
-  // Configuración de la capa
   const layerConfig =
     typeObra === 'Polygon'
       ? {
@@ -52,7 +51,6 @@ const CustomMap: React.FC<{ obra: Obra }> = ({ obra }) => {
         },
       };
 
-  // Datos GeoJSON con tipo dinámico
   const geoJsonData: Feature<Polygon | LineString> =
     typeObra === 'Polygon'
       ? {

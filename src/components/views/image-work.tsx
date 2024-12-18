@@ -12,14 +12,17 @@ interface Imgs {
 const ImageWork: React.FC<{ imgs: Imgs[] | null }> = ({ imgs }) => {
   if (!imgs || imgs.length === 0) {
     return (
-      <div className='flex flex-col items-center text-center text-cyan-900 dark:text-teal-400 font-semibold'>
+      <div className="grid grid-cols-1 p-4 gap-4 text-center text-cyan-900 dark:text-teal-400 justify-items-center items-center">
+        <p className="text-gray-800 dark:text-gray-400 font-semibold">No se encontraron imágenes</p>
         <Image
-          src='/imagenes/not_image.png'
+          src="/imagenes/not_image.png"
           alt="NotImage"
           width={300}
           height={200}
         />
-      </div>)
+      </div>
+
+    )
   }
 
   return (

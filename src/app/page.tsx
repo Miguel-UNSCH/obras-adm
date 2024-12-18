@@ -6,7 +6,7 @@ import Link from "next/link";
 
 export default function LandingPage() {
   return (
-    <div className="bg-bgColor min-h-screen flex flex-col">
+    <div className="bg-bgColor h-screen flex flex-col">
       <nav className="container mx-auto px-4 py-6 flex items-center justify-between">
         <div className="flex items-center">
           <div className="flex flex-row mr-2">

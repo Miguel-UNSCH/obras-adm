@@ -38,8 +38,8 @@ function SideDashboard({ obrasT }: obrasProsp) {
   };
 
   return (
-    <div className="flex flex-col gap-4 h-[500px] md:h-full w-full">
-      <div className="items-center text-center  text-red-500 dark:text-white bg-clip-text font-extrabold text-4xl sm:text-xl md:text-2xl lg:text-4xl">
+    <div className="flex flex-col gap-4 h-full w-full max-w-[500px]">
+      <div className="text-center text-red-500 dark:text-white bg-clip-text font-extrabold text-xl sm:text-xl md:text-2xl lg:text-4xl">
         <span>Obras por </span>
         <span className="sm:text-lg md:text-xl lg:text-4xl">administración </span>
         <span>directa</span>
@@ -53,8 +53,7 @@ function SideDashboard({ obrasT }: obrasProsp) {
 
         <Button type="submit">Buscar</Button>
       </form>
-
-      <div className="flex md:flex-col gap-4 overflow-auto">
+      <div className="flex md:flex-col gap-4 overflow-y-auto">
         <div className="space-y-4">
           {filteredObras.length > 0 ? (
             filteredObras.map((obra, index) => (

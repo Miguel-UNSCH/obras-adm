@@ -29,11 +29,11 @@ const DetallesContainer: React.FC<{ obra: Obra }> = ({ obra }) => {
     };
 
     return (
-        <div className="h-full flex flex-col space-y-4">
-            <div className="flex-1 rounded-3xl overflow-hidden">
+        <div className="grid grid-rows-[1fr_1fr] h-full gap-y-4">
+            <div className="rounded-3xl overflow-hidden">
                 <MapDrawingPolygon obra={mapDetails} />
             </div>
-            <div className="flex-1 rounded-3xl overflow-hidden">
+            <div className="rounded-3xl overflow-hidden">
                 <DescriptionWork obra={descriptionDetails} />
             </div>
         </div>

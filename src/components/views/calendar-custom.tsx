@@ -19,7 +19,7 @@ function CalendarCustom({ Daysworked, setDay }: DayProps) {
   const trabajadasDates = Daysworked.map((date) => new Date(date));
   
   return (
-    <div className="h-full p-4 flex flex-col justify-between max-w-full overflow-hidden">
+    <div className="flex flex-col h-full p-4 max-w-full max-h-full">
       <Calendar
         mode="single"
         selected={selectedDate}

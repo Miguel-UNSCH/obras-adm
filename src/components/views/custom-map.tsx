@@ -67,7 +67,7 @@ function CustomMap({ obrasT }: obrasProsp) {
       if (!userLocation) {
         setUserLocation(defaultLocation);
       }
-    }, 2500);
+    }, 2000);
 
     requestLocation();
 
@@ -76,12 +76,13 @@ function CustomMap({ obrasT }: obrasProsp) {
 
   if (!isClient || !userLocation) {
     return (
-      <div className="flex flex-col items-center justify-center gap-4 px-4 py-10">
+      <div className="flex flex-col h-full w-full items-center justify-center gap-4 px-4 py-10">
         {locationError ? (
-          <div className="items-center text-center text-red-500">
-            <p className="font-semibold">{locationError}</p>
-            <p>Se le redirigirá a una ubicación predeterminada...</p>
-            <Loader />
+          <div className="flex items-center justify-center min-h-screen text-center text-red-500">
+            <div className='gap-4'>
+              <p>Se le redirigirá a una ubicación predeterminada...</p>
+              <Loader />
+            </div>
           </div>
         ) : (
           <div className="text-center text-gray-700 dark:text-stone-400">

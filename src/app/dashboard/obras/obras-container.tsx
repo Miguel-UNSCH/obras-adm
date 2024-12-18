@@ -130,13 +130,14 @@ function ObrasContainer({ obras }: ObrasContainerProps) {
   };
 
   return (
-    <div className="grid gap-6">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-row-3 gap-4 items-center">
+    <div className="grid gap-4">
+
+      <div className="grid sm:grid-row-1 md:grid-cols-[1fr_auto] items-center gap-4">
         <Select onValueChange={setSelectedOption}>
-          <SelectTrigger className="w-full sm:w-[400px] md:w-[550px] lg:w-[800px] xl:w-[1140px]">
+          <SelectTrigger className="w-full">
             <SelectValue placeholder="Seleccionar opción" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="w-full">
             {options.map((option) => (
               <SelectItem key={option.value} value={option.value}>
                 {option.label}
@@ -146,10 +147,12 @@ function ObrasContainer({ obras }: ObrasContainerProps) {
         </Select>
         <ButtonSave onClick={handleSaveClick} />
       </div>
+
       <div className="rounded-3xl overflow-hidden w-full h-[85vh] shadow-lg">
         <NewCoordinates points={points} setPoints={setPoints} setProjectType={setProjectType} />
       </div>
     </div>
+
   );
 }
 

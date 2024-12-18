@@ -105,9 +105,9 @@ const LocationObras: React.FC<{ obra: Obra }> = ({ obra }) => {
         <div className="relative">
 
           {obra.projectType === "Superficie" ? (
-            <FaBuilding className="text-[#DC2626] text-xl z-0" />
+            <FaBuilding className="text-[#DC2626] text-2xl z-0" />
           ) : obra.projectType === "Carretera" ? (
-            <FaRoad className="text-[#F77717] text-xl z-0" />
+            <FaRoad className="text-[#F77717] text-2xl z-0" />
           ) : null}
 
           <div
