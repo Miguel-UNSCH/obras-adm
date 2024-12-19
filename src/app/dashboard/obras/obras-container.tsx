@@ -8,6 +8,7 @@ import { guardarObra } from "@/actions/obras-actions";
 import * as turf from "@turf/turf";
 import toasterCustom from "@/components/toaster-custom";
 import { toast } from "sonner";
+import { ConfirmDialog } from "@/components/dialog/dialog-confirm";
 
 // Define interfaces
 interface ObrasProps {
@@ -38,7 +39,6 @@ function ObrasContainer({ obras }: ObrasContainerProps) {
   );
 
   const handleSaveClick = async () => {
-    // Validar primero los campos requeridos antes de mostrar el modal
     if (!selectedOption) {
       toasterCustom(400, "Por favor, selecciona una obra antes de continuar.");
       return;
@@ -49,16 +49,15 @@ function ObrasContainer({ obras }: ObrasContainerProps) {
       return;
     }
 
-    // Si la validación es exitosa, mostrar el modal de confirmación
     handleShowConfirmationModal();
   };
 
   const handleShowConfirmationModal = () => {
-    setShowConfirmationModal(true); // Mostrar el modal de confirmación
+    setShowConfirmationModal(true);
   };
 
   const handleCloseConfirmationModal = () => {
-    setShowConfirmationModal(false); // Cerrar el modal de confirmación
+    setShowConfirmationModal(false);
   };
 
   const handleConfirmSave = async () => {
@@ -69,14 +68,13 @@ function ObrasContainer({ obras }: ObrasContainerProps) {
       coordinates.push(coordinates[0]);
     }
 
-    if (coordinates.length < 4) {
+    if (coordinates.length < 3) {
       toasterCustom(400, "El polígono no tiene suficientes puntos para ser válido.");
       return;
     }
 
     let areaOrLength;
 
-    // Calcular área o longitud según el tipo de proyecto
     if (projectType === "Superficie") {
       try {
         const polygon = turf.polygon([coordinates]);
@@ -129,18 +127,17 @@ function ObrasContainer({ obras }: ObrasContainerProps) {
 
       toast.dismiss();
       toasterCustom(data.status, data.message);
+      handleCloseConfirmationModal()
 
       if (data.status === 200) {
         setTimeout(() => {
-          window.location.reload(); // Recarga la página después de un breve retraso
-        }, 1000); // Opcional: espera 1 segundo antes de recargar
+          window.location.reload();
+        }, 1000);
       }
     } catch (error) {
       toasterCustom(500, "Error al procesar la solicitud.");
       console.error("Error al guardar los datos:", error);
     }
-
-    handleCloseConfirmationModal(); // Cerrar el modal después de guardar
   };
 
   return (
@@ -158,34 +155,21 @@ function ObrasContainer({ obras }: ObrasContainerProps) {
             ))}
           </SelectContent>
         </Select>
-        <ButtonSave onClick={handleSaveClick} /> {/* Mostrar el modal al hacer clic */}
+        <ButtonSave onClick={handleSaveClick} />
       </div>
 
       <div className="rounded-3xl overflow-hidden w-full h-[85vh] shadow-lg">
         <NewCoordinates points={points} setPoints={setPoints} setProjectType={setProjectType} />
       </div>
 
-      {showConfirmationModal && (
-        <div className="fixed inset-0 flex justify-center items-center bg-gray-600 bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg">
-            <h2 className="text-lg font-semibold">¿Está seguro de que desea guardar?</h2>
-            <div className="mt-4 flex justify-between">
-              <button
-                className="bg-blue-500 text-white px-4 py-2 rounded"
-                onClick={handleConfirmSave}
-              >
-                Sí
-              </button>
-              <button
-                className="bg-red-500 text-white px-4 py-2 rounded"
-                onClick={handleCloseConfirmationModal}
-              >
-                Cancelar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <ConfirmDialog 
+        isOpen={showConfirmationModal}
+        onClose={handleCloseConfirmationModal}
+        onConfirm={handleConfirmSave}
+        title="¿Estas seguro de guardar esta información?"
+        description="Los datos guardados incluiran nombres y coordenadas"
+        styleButton="bg-green-500 hover:bg-emerald-500"
+      />
     </div>
   );
 }

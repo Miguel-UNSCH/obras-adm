@@ -1,4 +1,4 @@
-import 'mapbox-gl/dist/mapbox-gl.css'
+import 'mapbox-gl/dist/mapbox-gl.css';
 import Map, { Marker, NavigationControl, Source, Layer, MapLayerMouseEvent } from 'react-map-gl';
 import { useState, useCallback, useEffect } from 'react';
 import { Feature, Polygon, LineString } from 'geojson';
@@ -59,32 +59,10 @@ function NewCoordinates({ points, setPoints, setProjectType }: NewCoordinatesPro
 
     setLocalPoints((prevPoints) => {
       const newPoints: [number, number][] = [...prevPoints, [lng, lat]];
-
-      if (projectType === 'Carretera' && newPoints.length >= 2) {
-        setLineData({
-          type: 'Feature',
-          geometry: {
-            type: 'LineString',
-            coordinates: newPoints,
-          },
-          properties: {},
-        });
-        setPolygonData(null);
-      } else if (projectType === 'Superficie' && newPoints.length >= 3) {
-        setPolygonData({
-          type: 'Feature',
-          geometry: {
-            type: 'Polygon',
-            coordinates: [newPoints.concat([newPoints[0]])],
-          },
-          properties: {},
-        });
-        setLineData(null);
-      }
-
+      updateGeometryData(newPoints, projectType);
       return newPoints;
     });
-  }, [projectType]);
+  }, [projectType, updateGeometryData]);
 
   useEffect(() => {
     updateGeometryData(localPoints, projectType);
@@ -165,18 +143,6 @@ function NewCoordinates({ points, setPoints, setProjectType }: NewCoordinatesPro
     );
   }
 
-  // Función para manejar el arrastre del marcador
-  const handleMarkerDragEnd = (index: number, event: any) => {
-    const { lng, lat } = event.lngLat;
-
-    setLocalPoints((prevPoints) => {
-      const updatedPoints = [...prevPoints];
-      updatedPoints[index] = [lng, lat]; // Actualiza la coordenada del marcador
-      updateGeometryData(updatedPoints, projectType);
-      return updatedPoints;
-    });
-  };
-
   return (
     <div className="relative w-full h-full">
       <div className='absolute top-4 left-4 z-10'>
@@ -198,16 +164,7 @@ function NewCoordinates({ points, setPoints, setProjectType }: NewCoordinatesPro
         mapStyle={'mapbox://styles/mapbox/satellite-streets-v12'}
         onClick={handleMapClick}
       >
-        <NavigationControl
-          position="bottom-right"
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            padding: '10px',
-            gap: '10px',
-            borderRadius: '15px',
-          }}
-        />
+        <NavigationControl position="bottom-right" />
 
         {localPoints.map(([lng, lat], index) => (
           <Marker
@@ -216,7 +173,15 @@ function NewCoordinates({ points, setPoints, setProjectType }: NewCoordinatesPro
             latitude={lat}
             color="blue"
             draggable
-            onDragEnd={(event) => handleMarkerDragEnd(index, event)} // Maneja el evento de arrastre
+            onDrag={(event) => {
+              const { lng: newLng, lat: newLat } = event.lngLat;
+              setLocalPoints((prevPoints) => {
+                const updatedPoints = [...prevPoints];
+                updatedPoints[index] = [newLng, newLat];
+                updateGeometryData(updatedPoints, projectType);
+                return updatedPoints;
+              });
+            }}
           >
             <TbPointFilled size={20} />
           </Marker>
