@@ -35,14 +35,14 @@ export function NotificationItem({ notification }: { notification: Notification 
                 </div>
                 <div className="flex-grow overflow-hidden">
                     <div className="flex justify-between items-start mb-1">
-                        <h3 className="text-md font-semibold text-center" title={notification.title}>
+                        <p className="text-xs font-semibold text-center sm:text-xl" title={notification.title}>
                             {notification.title}
-                        </h3>
+                        </p>
                         <Badge className={priorityColors[notification.priority] || ''}>
                             {notification.priority}
                         </Badge>
                     </div>
-                    <p className="text-gray-600 mb-2 line-clamp-2 text-left" title={notification.description}>
+                    <p className="text-gray-600 mb-2 line-clamp-2 text-left text-xs sm:text-sm" title={notification.description}>
                         {notification.description}
                     </p>
                     <p className="text-sm text-gray-500">{notification.update}</p>

@@ -141,7 +141,7 @@ function ObrasContainer({ obras }: ObrasContainerProps) {
   };
 
   return (
-    <div className="grid gap-4">
+    <div className="flex flex-col gap-4 h-full">
       <div className="grid sm:grid-row-1 md:grid-cols-[1fr_auto] items-center gap-4">
         <Select onValueChange={setSelectedOption}>
           <SelectTrigger className="w-full">
@@ -158,7 +158,7 @@ function ObrasContainer({ obras }: ObrasContainerProps) {
         <ButtonSave onClick={handleSaveClick} />
       </div>
 
-      <div className="rounded-3xl overflow-hidden w-full h-[85vh] shadow-lg">
+      <div className="rounded-3xl overflow-hidden w-full h-full shadow-lg">
         <NewCoordinates points={points} setPoints={setPoints} setProjectType={setProjectType} />
       </div>
 
