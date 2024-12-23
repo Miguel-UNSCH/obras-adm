@@ -46,7 +46,7 @@ cat <<EOF > Dockerfile
 # Dockerfile
 
 # 1. Etapa de construcción
-FROM node:18-alpine AS builder
+FROM node:20-alpine AS builder
 
 # Establecer el directorio de trabajo
 WORKDIR /app
@@ -64,7 +64,7 @@ COPY . .
 RUN npm run build
 
 # 2. Etapa de producción
-FROM node:20-alpine AS builder
+FROM node:20-alpine
 
 # Establecer el directorio de trabajo
 WORKDIR /app
