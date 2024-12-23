@@ -29,7 +29,7 @@ const DetallesContainer: React.FC<{ obra: Obra }> = ({ obra }) => {
     };
 
     return (
-        <div className="grid grid-rows-[1fr_1fr] h-full gap-y-4">
+        <div className="grid grid-rows-2 h-full w-full gap-y-4">
             <div className="rounded-3xl overflow-hidden">
                 <MapDrawingPolygon obra={mapDetails} />
             </div>

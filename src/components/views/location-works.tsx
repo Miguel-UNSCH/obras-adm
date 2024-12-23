@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/prefer-as-const */
 import { Feature, Polygon, LineString } from 'geojson';
 import { useState } from 'react';
 import { FaRoad, FaBuilding } from 'react-icons/fa';
-import { Marker, Source, Layer } from 'react-map-gl/maplibre';
+import { Marker, Source, Layer } from 'react-map-gl';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
@@ -114,7 +115,7 @@ const LocationObras: React.FC<{ obra: Obra }> = ({ obra }) => {
             className={`absolute top-0 left-0 ${selectedMarker === "marker" && showDetails ? "block" : "hidden"
               } z-50`}
           >
-            <div className="bg-gradient-to-r from-gray-900 to-black text-white p-4 rounded-lg shadow-lg w-max-6x1 w-[300px] mx-auto text-justify">
+            <div className="bg-gradient-to-r from-gray-900 to-black text-white p-4 rounded-lg shadow-lg max-w-full sm:max-w-lg w-[320px] mx-auto text-justify">
               <h2 className="text-[14px] font-extrabold mb-4 text-center">Detalles de la obra</h2>
               <div className="space-y-3">
                 <div>

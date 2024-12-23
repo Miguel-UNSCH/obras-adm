@@ -29,11 +29,11 @@ const ImagesContainer: React.FC<ImagesContainerProps> = ({ imgs }) => {
   const onlyDay = imgs?.filter((result) => result.update === (day + "T00:00")) ?? [];
 
   return (
-    <div className="grid grid-rows-[1fr_1fr] h-full gap-y-4">
-      <div className="bg-gradient-to-tr from-[#FFCEB7] dark:from-[#0F172A] dark:to-[#065F46] to-[#E3D8D6] rounded-3xl">
+    <div className="grid grid-rows-2 h-full w-full gap-y-4">
+      <div className="rounded-3xl w-full bg-gradient-to-tr from-[#FFCEB7] dark:from-[#0F172A] dark:to-[#065F46] to-[#E3D8D6]">
         <CalendarCustom Daysworked={dayT} setDay={setDay} />
       </div>
-      <div className="p-2 rounded-3xl bg-white dark:bg-gray-800 shadow-lg overflow-y-auto">
+      <div className="rounded-3xl bg-white dark:bg-gray-800 shadow-lg overflow-y-auto">
         <ImageWork imgs={onlyDay} />
       </div>
     </div>

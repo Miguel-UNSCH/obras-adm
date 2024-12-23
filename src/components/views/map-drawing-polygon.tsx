@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/prefer-as-const */
 "use client";
 
 import 'mapbox-gl/dist/mapbox-gl.css';

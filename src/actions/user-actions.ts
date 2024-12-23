@@ -3,7 +3,7 @@
 
 import { auth } from "@/auth";
 import db from "@/lib/database";
-import { updateUserSchema, userSchema } from "@/utils/zod/schemas";
+import { updateUserSchema } from "@/utils/zod/schemas";
 import { z } from "zod";
 import bcrypt from "bcryptjs";
 import { formatDateTime } from "@/lib/format-date";
@@ -68,12 +68,6 @@ export async function getUsers(){
     if (!session) {
       return { message: "No existe sessión activa", status: 500 };
     }
-
-    const userWithRole = await db.user.findUnique({
-      where: {
-        id: session.user.id,
-      },
-    });
 
     const users = await db.user.findMany({});
 

@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import Image from "next/image";
 
 interface Imgs {
@@ -26,12 +27,12 @@ const ImageWork: React.FC<{ imgs: Imgs[] | null }> = ({ imgs }) => {
   }
 
   return (
-    <div className="h-0 grid grid-cols-1 md:grid-cols-2 gap-2">
+    <div className="h-0 grid grid-cols-1 md:grid-cols-2 gap-2 p-4">
       {
         imgs &&
         imgs.map((img, i) => (
           <div key={i} className="h-60 w-full bg-red-200 rounded-lg overflow-hidden shadow-md">
-            <img src={img.url || ''} alt={img.id} className="w-full h-full object-cover" />
+            <img src={img.url || ''} alt={img.id} className="w-full h-full object-cover" width={500} height={500} />
           </div>
         ))
       }

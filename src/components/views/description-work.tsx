@@ -1,5 +1,4 @@
 import { FaMapMarkerAlt, FaCogs, FaUserAlt } from 'react-icons/fa';
-import * as turf from '@turf/turf';
 
 interface Obra {
     id: string;
@@ -13,7 +12,7 @@ interface Obra {
 const DescriptionWork: React.FC<{ obra: Obra }> = ({ obra }) => {
 
     return (
-        <div className="grid grid-cols h-full p-6 gap-1 bg-white dark:bg-gray-800 shadow-lg rounded-xl">
+        <div className="grid grid-cols h-full p-6 gap-1 bg-white dark:bg-gray-800 shadow-lg">
             <p className="font-bold text-gray-900 dark:text-white text-justify p-4 text-sm">
                 {obra.name}
             </p>

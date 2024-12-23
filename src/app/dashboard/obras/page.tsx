@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { getProyectos } from "@/actions/obras-actions";
 import ObrasContainer from "./obras-container";
 

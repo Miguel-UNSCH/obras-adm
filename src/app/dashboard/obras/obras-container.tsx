@@ -81,7 +81,7 @@ function ObrasContainer({ obras }: ObrasContainerProps) {
         const area = turf.area(polygon).toFixed(2); // Área en metros cuadrados
         areaOrLength = `${area} m²`;
       } catch (error) {
-        toasterCustom(500, "Error al calcular el área del polígono.");
+        toasterCustom(500, "Error al calcular el área del polígono." + error);
         return;
       }
     } else if (projectType === "Carretera") {
@@ -90,7 +90,7 @@ function ObrasContainer({ obras }: ObrasContainerProps) {
         const length = turf.length(line, { units: "meters" }).toFixed(2); // Longitud en metros
         areaOrLength = `${length} m`;
       } catch (error) {
-        toasterCustom(500, "Error al calcular la longitud de la línea.");
+        toasterCustom(500, "Error al calcular la longitud de la línea." + error);
         return;
       }
     } else {

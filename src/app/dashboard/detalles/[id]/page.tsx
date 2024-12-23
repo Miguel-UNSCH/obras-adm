@@ -53,7 +53,7 @@ function Page() {
   </div>;
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 h-full  gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 h-full w-full gap-4">
       <div className="h-full">
         <ImagesContainer imgs={img} />
       </div>

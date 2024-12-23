@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import 'mapbox-gl/dist/mapbox-gl.css';
 import Map, { Marker, NavigationControl, Source, Layer, MapLayerMouseEvent } from 'react-map-gl';
 import { useState, useCallback, useEffect } from 'react';
