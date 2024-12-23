@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { getObras } from "@/actions/obras-actions";
 import CustomMap from "@/components/views/custom-map";
 import SideDashboard from "@/components/views/side-dashboard";
@@ -6,7 +7,7 @@ async function Page() {
 
   const queryResult = await getObras();
 
-  const obras = queryResult.map((row) => ({
+  const obras = queryResult.map((row: any) => ({
     cui: row.cui,
     name: row.name,
     areaOrLength: row.areaOrLength,
