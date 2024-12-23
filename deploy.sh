@@ -54,8 +54,12 @@ WORKDIR /app
 # Copiar los archivos de package.json y package-lock.json (si existe)
 COPY prisma ./prisma
 COPY package*.json ./ 
+# Copiar el archivo .env
+COPY .env .env
 
 RUN apk add --no-cache openssl
+
+ENV DATABASE_URL="file:./dev.db"
 
 # Instalar las dependencias
 RUN npm install -g prisma && npm install
