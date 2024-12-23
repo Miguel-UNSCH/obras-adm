@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import ObraCard from "@/components/obraCard";
+import ObraCard from "../ObraCard";
 
 interface Obra {
   cui: string;
