@@ -72,7 +72,7 @@ export async function getUsers(){
     const users = await db.user.findMany({});
 
     // Formatear los datos antes de devolver la respuesta
-    const formattedData = users.map((user) => ({
+    const formattedData = users.map((user:any) => ({
       id: user.id,
       name: user.name,
       email: user.email,
