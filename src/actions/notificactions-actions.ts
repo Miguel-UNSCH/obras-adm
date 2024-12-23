@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 
 import db from "@/lib/database";
@@ -11,7 +12,7 @@ export async function getNotification() {
             },
         });
 
-        const resultados = result.map((resul) => ({
+        const resultados = result.map((resul: any) => ({
             id: resul.id,
             title: resul.title,
             description: resul.description,

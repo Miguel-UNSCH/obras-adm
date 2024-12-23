@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 
 import db from "@/lib/database";
@@ -11,7 +12,7 @@ export async function getDaysWorked(id: string) {
       },
     });
 
-    const diasTrabajados = resultados.map((resul) => ({
+    const diasTrabajados = resultados.map((resul: any) => ({
       id: resul.id,
       url: resul.url,
       latitud: resul.latitud,

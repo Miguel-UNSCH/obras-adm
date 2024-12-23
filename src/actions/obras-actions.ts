@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 
 import { query } from '@/lib/db';
@@ -7,7 +8,7 @@ export async function getObras() {
   try {
     const result = await db.coordinates.findMany();
 
-    return result.map((obra) => ({
+    return result.map((obra: any) => ({
       id: obra.id,
       cui: obra.cui,
       name: obra.name,
