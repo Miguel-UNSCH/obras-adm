@@ -61,7 +61,7 @@ export default function SignIn({ onSubmit, serverError, status }: { onSubmit: (v
           {showServerError && (
             <Alert variant={status === 200 ? 'default' : 'destructive'} className="mb-6">
               <AlertDescription 
-                className={`flex items-center gap-4 ${status === 200 ? 'text-primary' : ''}`}
+                className={`flex items-center gap-4 ${status === 200 ? 'text-green-400' : ''}`}
               >
                 <OctagonAlert />
                 <span>{serverError}</span>
@@ -75,9 +75,9 @@ export default function SignIn({ onSubmit, serverError, status }: { onSubmit: (v
                 name="username"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Usuario o correo</FormLabel>
+                    <FormLabel>Usuario</FormLabel>
                     <FormControl>
-                      <Input placeholder="juan@juan.com" {...field} />
+                      <Input placeholder="JPEREZ" {...field} />
                     </FormControl>
                     <FormMessage className='text-end'/>
                   </FormItem>

@@ -1,190 +1,152 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useEffect, useState } from 'react';
-import 'maplibre-gl/dist/maplibre-gl.css';
-import Map, { Marker, NavigationControl, Source, Layer } from 'react-map-gl/maplibre';
-import { Feature, Polygon } from 'geojson';
-import { FaMapMarkerAlt } from "react-icons/fa";
-import { Button } from '../ui/button';
+import { useEffect, useState } from "react";
+import "mapbox-gl/dist/mapbox-gl.css";
+import Map, { NavigationControl } from "react-map-gl";
+import LocationObras from "./location-works";
+import Loader from "./wait-custom";
 
-function CustomMap() {
+interface Obras {
+  id: string;
+  cui: string;
+  name: string;
+  points: number[][];
+  areaOrLength: string | null;
+  resident: string;
+  projectType: string;
+  propietario_id: string;
+}
+
+type obrasProsp = {
+  obrasT: Obras[];
+};
+
+interface UserLocation {
+  latitude: number;
+  longitude: number;
+}
+
+function CustomMap({ obrasT }: obrasProsp) {
+  const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
+
+  const [userLocation, setUserLocation] = useState<UserLocation | null>(null);
   const [isClient, setIsClient] = useState(false);
-  const [selectedMarker, setSelectedMarker] = useState<string | null>(null); // Nuevo estado para el marcador seleccionado
-  const [showDetails, setShowDetails] = useState<boolean>(false); // Estado para mostrar/ocultar la ventana de detalles
+  const [locationError, setLocationError] = useState<string | null>(null);
+  const [defaultLocation] = useState<UserLocation>({
+    latitude: -13.160441,
+    longitude: -74.225832,
+  });
+  const [styleLoaded, setStyleLoaded] = useState(false);
+
+  const requestLocation = () => {
+    if (!navigator.geolocation) {
+      setLocationError("La geolocalización no es soportada por este navegador");
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        setUserLocation({ latitude, longitude });
+        setLocationError(null);
+      },
+      (error) => {
+        if (error.code === 1) {
+          setLocationError("El usuario denegó el permiso de geolocalización");
+        } else if (error.code === 2) {
+          setLocationError("La posición geográfica no está disponible");
+        } else if (error.code === 3) {
+          setLocationError(
+            "La solicitud de geolocalización ha superado el tiempo de espera"
+          );
+        }
+      },
+      { timeout: 0 }
+    );
+  };
 
   useEffect(() => {
     setIsClient(true);
-  }, []);
 
-  if (!isClient) {
-    return null;
+    const timeoutId = setTimeout(() => {
+      if (!userLocation) {
+        setUserLocation(defaultLocation);
+      }
+    }, 0);
+
+    requestLocation();
+
+    return () => clearTimeout(timeoutId);
+  }, [userLocation, defaultLocation]);
+
+  const handleStyleLoad = (e: any) => {
+    setStyleLoaded(true);
+    const map = e.target;
+    const layersToHide = ["road-label", "road-symbol"];
+    layersToHide.forEach((layer) => {
+      if (map.getLayer(layer)) {
+        map.setLayoutProperty(layer, "visibility", "none");
+      }
+    });
+  };
+
+  if (!isClient || !userLocation) {
+    return (
+      <div className="flex flex-col h-full w-full items-center justify-center gap-4 px-4 py-10">
+        {locationError ? (
+          <div className="flex items-center justify-center min-h-screen text-center text-red-500">
+            <div className="gap-4">
+              <p>{locationError}</p>
+              <p>Se le redirigirá a una ubicación predeterminada...</p>
+              <Loader />
+            </div>
+          </div>
+        ) : (
+          <div className="text-center text-gray-700 dark:text-stone-400">
+            <p className="font-semibold">
+              Esperando la ubicación del usuario...
+            </p>
+          </div>
+        )}
+      </div>
+    );
   }
-
-  // Datos de los polígonos
-  const polygonData: Feature<Polygon> = {
-    type: 'Feature',
-    properties: {},
-    geometry: {
-      type: 'Polygon',
-      coordinates: [
-        [
-          [-74.222602, -13.149612],
-          [-74.217914, -13.150564],
-          [-74.214760, -13.148406],
-          [-74.215634, -13.146604],
-          [-74.218606, -13.145063],
-          [-74.221734, -13.142415],
-          [-74.222726, -13.140733],
-          [-74.222501, -13.139693],
-          [-74.222817, -13.138841],
-          [-74.222388, -13.137410],
-          [-74.222576, -13.137013],
-          [-74.223649, -13.136512],
-          [-74.223761, -13.139190],
-          [-74.224373, -13.139266],
-          [-74.224230, -13.140496],
-          [-74.226143, -13.141530],
-          [-74.224333, -13.144073],
-          [-74.224722, -13.144309],
-          [-74.224124, -13.145134],
-          [-74.223997, -13.146426],
-          [-74.224287, -13.146644],
-          [-74.222741, -13.148810],
-          [-74.222575, -13.149254],
-        ],
-      ],
-    },
-  };
-
-  const polygonData1: Feature<Polygon> = {
-    type: 'Feature',
-    properties: {},
-    geometry: {
-      type: 'Polygon',
-      coordinates: [
-        [
-          [-74.206840, -13.162083],
-          [-74.205835, -13.159642],
-          [-74.201010, -13.160051],
-          [-74.201484, -13.161868],
-          [-74.203057, -13.162084],
-        ],
-      ],
-    },
-  };
-
-  // Capas de los polígonos
-  const polygonLayer1 = {
-    id: 'polygon-layer-1',
-    type: 'fill' as 'fill', // Asegúrate de que el tipo sea 'fill' para capas de polígonos
-    paint: {
-      'fill-color': '#088ff5',
-      'fill-opacity': 0.3,
-    },
-  };
-
-  const polygonLayer2 = {
-    id: 'polygon-layer-2',
-    type: 'fill' as 'fill', // Asegúrate de que el tipo sea 'fill' para capas de polígonos
-    paint: {
-      'fill-color': '#ff6347',
-      'fill-opacity': 0.3,
-    },
-  };
-
-  // Función para manejar el clic en los marcadores
-  const handleMarkerClick = (id: string) => {
-    setSelectedMarker(id); // Al hacer clic, actualizamos el estado con el id del marcador
-    setShowDetails(true); // Mostrar el detalle de la obra cuando se hace clic en el marcador
-  };
-
-  // Función para cerrar la ventana de detalles
-  const handleCloseDetails = () => {
-    setShowDetails(false); // Ocultar la ventana de detalles
-  };
 
   return (
     <Map
+      mapboxAccessToken={token}
       initialViewState={{
-        longitude: -74.213586,
-        latitude: -13.166720,
+        longitude: userLocation
+          ? userLocation.longitude
+          : defaultLocation.longitude,
+        latitude: userLocation
+          ? userLocation.latitude
+          : defaultLocation.latitude,
         zoom: 13,
       }}
       attributionControl={false}
-      mapStyle="https://api.maptiler.com/maps/topo-v2/style.json?key=qHY98vxGerd5lTUUPwyF"
+      mapStyle={"mapbox://styles/mapbox/standard"}
+      onLoad={handleStyleLoad}
+      logoPosition="top-right"
     >
-      <NavigationControl
-        position="bottom-right"
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          padding: "10px",
-          gap: "10px",
-          borderRadius: "15px",
-        }}
-      />
-
-      {/* Marcador para la obra N1 */}
-      <Marker
-        longitude={-74.220767}
-        latitude={-13.146605}
-        onClick={() => handleMarkerClick('obra1')} // Pasa un id único para cada marcador
-      >
-        <FaMapMarkerAlt className="text-[#FF0000] text-4xl" />
-        <div className={`absolute top-0 left-0 ${selectedMarker === 'obra1' && showDetails ? 'block' : 'hidden'}`}>
-          <p>TITULO: OBRAS N1</p>
-          <br />
-          <Button onClick={handleCloseDetails}>Cerrar</Button>
-        </div>
-      </Marker>
-
-      {/* Marcador para la obra N2 */}
-      <Marker
-        longitude={-74.204258}
-        latitude={-13.160892}
-        onClick={() => handleMarkerClick('obra2')} // Pasa un id único para cada marcador
-      >
-        <FaMapMarkerAlt className="text-[#FF0000] text-4xl" />
-        <div className={`absolute top-0 left-0 ${selectedMarker === 'obra2' && showDetails ? 'block' : 'hidden'}`}>
-          <div className="bg-gradient-to-r from-gray-900 to-black text-white p-4 rounded-lg shadow-lg w-max-6x1 w-[300px] mx-auto text-justify">
-            <h2 className="text-[14px] font-extrabold mb-4 text-center">Detalles del Proyecto</h2>
-            <div className="space-y-3">
-              <div>
-                <strong className="text-[13px]">CUI:</strong> <span className="text-[12px] text-gray-200">4124523</span>
-              </div>
-              <div>
-                <strong className="text-[13px]">Proyecto:</strong> <span className="text-[12px] text-gray-200">OAD</span>
-              </div>
-              <div>
-                <strong className="text-[13px]">Descripción del Proyecto:</strong>
-                <p className="text-[12px] leading-relaxed text-gray-200">
-                  MEJORAMIENTO Y AMPLIACION DE LOS SERVICIOS DEL SANTUARIO DE LA MEMORIA LA HOYADA EN EL DISTRITO DE ANDRES AVELINO CACERES -
-                  PROVINCIA DE HUAMANGA - DEPARTAMENTO DE AYACUCHO
-                </p>
-              </div>
-              <div>
-                <strong className="text-[13px]">Residente:</strong> <span className="text-[12px] text-gray-200">Ing. Juan Pérez</span>
-              </div>
-            </div>
-            <Button
-              className="mx-auto block"
-              onClick={handleCloseDetails}
-            >
-              Cerrar
-            </Button>
-
-          </div>
-        </div>
-      </Marker>
-
-      {/* Capas de polígonos */}
-      <Source id="polygon-source" type="geojson" data={polygonData}>
-        <Layer {...polygonLayer1} />
-      </Source>
-
-      <Source id="polygon-source1" type="geojson" data={polygonData1}>
-        <Layer {...polygonLayer2} />
-      </Source>
+      {styleLoaded && (
+        <>
+          <NavigationControl
+            position="bottom-right"
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              padding: "10px",
+              gap: "10px",
+              borderRadius: "15px",
+            }}
+          />
+          {obrasT.map((obra, index) => (
+            <LocationObras key={index} obra={obra} />
+          ))}
+        </>
+      )}
     </Map>
   );
 }

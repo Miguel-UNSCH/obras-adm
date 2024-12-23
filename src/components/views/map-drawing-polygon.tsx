@@ -1,114 +1,100 @@
+/* eslint-disable @typescript-eslint/prefer-as-const */
 "use client";
 
-import 'maplibre-gl/dist/maplibre-gl.css';
-import Map, { Marker, NavigationControl, Source, Layer, MapLayerMouseEvent } from 'react-map-gl/maplibre';
-import { useState, useCallback } from 'react';
-import { Feature, Polygon } from 'geojson';
-import { TbArrowBack, TbPointFilled } from "react-icons/tb";
-import { Button } from '../ui/button';
-import ButtonSave from '../ui/icons-save';
-import ButtonBack from '../ui/icons-back';
+import 'mapbox-gl/dist/mapbox-gl.css';
+import Map, { NavigationControl, Source, Layer } from 'react-map-gl';
+import { Feature, Polygon, LineString } from 'geojson';
 
-function MapDrawingPolygon() {
-  const [points, setPoints] = useState<[number, number][]>([]);
-  const [polygonData, setPolygonData] = useState<Feature<Polygon> | null>(null);
 
-  const handleMapClick = useCallback((event: MapLayerMouseEvent) => {
-    const { lng, lat } = event.lngLat;
-    setPoints((prevPoints) => {
-      const newPoints = [...prevPoints, [lng, lat] as [number, number]];
-      if (newPoints.length >= 3) {
-        setPolygonData({
-          type: 'Feature',
-          geometry: {
-            type: 'Polygon',
-            coordinates: [newPoints.concat([newPoints[0]])],
-          },
-          properties: {},
-        });
-      }
-      return newPoints;
-    });
-  }, []);
+interface Obra {
+  id: string;
+  points: number[][];
+  projectType: string;
+}
 
-  const polygonLayer = {
-    id: 'polygon-layer',
-    type: 'fill',
-    paint: {
-      'fill-color': '#088ff5',
-      'fill-opacity': 0.3,
-    },
-  } as const;
 
-  const handleButtonClick = () => {
-    setPoints((prevPoints) => {
-      const updatedPoints = prevPoints.slice(0, -1);
-      if (updatedPoints.length >= 3) {
-        setPolygonData({
-          type: 'Feature',
-          geometry: {
-            type: 'Polygon',
-            coordinates: [updatedPoints.concat([updatedPoints[0]])],
-          },
-          properties: {},
-        });
-      } else {
-        setPolygonData(null);
-      }
-      return updatedPoints;
-    });
+const CustomMap: React.FC<{ obra: Obra }> = ({ obra }) => {
+  const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN
+
+  const typeObra = obra.projectType === 'Superficie' ? 'Polygon' : 'LineString';
+
+  const calculateCentroid = (coordinates: number[][]): { longitude: number; latitude: number } => {
+    const [sumLon, sumLat] = coordinates.reduce(
+      ([lon, lat], [coordLon, coordLat]) => [lon + coordLon, lat + coordLat],
+      [0, 0]
+    );
+
+    return {
+      latitude: sumLat / coordinates.length,
+      longitude: sumLon / coordinates.length,
+    };
   };
 
-  // Función para manejar el click en el botón de guardar
-  const handleSaveClick = () => {
-    console.log(points);
-  };
+  const centroid = calculateCentroid(obra.points);
+
+  const layerConfig =
+    typeObra === 'Polygon'
+      ? {
+        id: `polygon-layer-${obra.id}`,
+        type: 'fill' as 'fill',
+        paint: {
+          'fill-color': '#E27373',
+          'fill-opacity': 0.5,
+          'fill-outline-color': '#FF0000',
+        },
+      }
+      : {
+        id: `line-layer-${obra.id}`,
+        type: 'line' as 'line',
+        paint: {
+          'line-color': '#FF0000',
+          'line-width': 5,
+        },
+      };
+
+  const geoJsonData: Feature<Polygon | LineString> =
+    typeObra === 'Polygon'
+      ? {
+        type: 'Feature',
+        properties: {},
+        geometry: {
+          type: 'Polygon',
+          coordinates: [obra.points],
+        },
+      }
+      : {
+        type: 'Feature',
+        properties: {},
+        geometry: {
+          type: 'LineString',
+          coordinates: obra.points,
+        },
+      };
 
   return (
-    <div className="relative w-full h-full">
+    <Map
+      mapboxAccessToken={token}
+      initialViewState={{
+        longitude: centroid.longitude,
+        latitude: centroid.latitude,
+        zoom: 14,
+      }}
+      attributionControl={false}
+      mapStyle={'mapbox://styles/mapbox/standard'}
+    >
+      <NavigationControl position="bottom-right" style={{
+        display: "flex",
+        flexDirection: "column",
+        padding: "10px",
+        gap: "10px",
+        borderRadius: "15px"
+      }} />
+      <Source id="polygon-source" type="geojson" data={geoJsonData}>
+        <Layer {...layerConfig} />
+      </Source>
+    </Map>
 
-      <div className='absolute top-4 left-4 z-10'>
-        <ButtonBack onClick={handleButtonClick}/>
-      </div>
-
-      
-      <div className="absolute top-4 right-4 z-10">
-        <ButtonSave onClick={handleSaveClick} />
-      </div>
-      <Map
-        initialViewState={{
-          longitude: -74.219805,
-          latitude: -13.146554,
-          zoom: 14,
-        }}
-        attributionControl={false}
-        mapStyle="https://api.maptiler.com/maps/satellite/style.json?key=qHY98vxGerd5lTUUPwyF"
-        onClick={handleMapClick}
-        style={{ width: '100%', height: '100%' }}
-      >
-        <NavigationControl
-          position="bottom-right"
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            padding: "10px",
-            gap: "10px",
-            borderRadius: "15px",
-          }}
-        />
-        {points.map((point, index) => (
-          <Marker key={index} longitude={point[0]} latitude={point[1]} color="blue">
-            <TbPointFilled size={20} />
-          </Marker>
-        ))}
-        {polygonData && (
-          <Source id="polygon-source" type="geojson" data={polygonData}>
-            <Layer {...polygonLayer} />
-          </Source>
-        )}
-      </Map>
-    </div>
   );
 }
 
-export default MapDrawingPolygon;
+export default CustomMap;

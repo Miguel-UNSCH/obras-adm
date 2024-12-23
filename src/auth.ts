@@ -1,7 +1,6 @@
 import NextAuth from "next-auth";
 
 import { PrismaAdapter } from "@auth/prisma-adapter";
-
 import db from "@/lib/database";
 import authConfig from "./auth.config";
 
@@ -10,9 +9,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   ...authConfig,
   session: {
     strategy: "jwt",
-    maxAge: 24 * 60 * 60, // Tiempo de expiracón 24 horas
-    updateAge: 8 * 60 * 60, // Actualiza el tiempo de expiración cada 8 horas
+    maxAge: 30 * 60, // Tiempo de expiracón 30 minutos
+    updateAge: 10 * 60, // Actualiza el tiempo de expiración cada 10 minutos
   },
+  trustHost: true,
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
@@ -33,6 +33,35 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return !!auth
     }
   },
+  cookies: {
+    sessionToken: {
+      name: `${process.env.COOKIE_PREFIX}_session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+      },
+    },
+    csrfToken: {
+      name: `${process.env.COOKIE_PREFIX}_csrf-token`,
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+      },
+    },
+    callbackUrl: {
+      name: `${process.env.COOKIE_PREFIX}_callback-url`,
+      options: {
+        sameSite: "lax",
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+      },
+    },
+  },
+  secret: process.env.NEXTAUTH_SECRET,
   pages: {
     signIn: "/login",
   },

@@ -1,24 +1,29 @@
 import React from 'react';
 
 interface Obra {
-  id: string;
-  tipo_proyecto: string;
-  abreviatura: string;
-  nombre: string;
-  codigo_CUI: string;
+  cui: string;
+  name: string;
+  resident: string;
+  projectType: string;
 }
 
 const ObraCard: React.FC<{ obra: Obra }> = ({ obra }) => {
   return (
     <div className="bg-secondary p-2 rounded-lg space-y-2">
       <h1 className="text-center font-semibold">
-        CUI: {obra.codigo_CUI}
+        CUI: {obra.cui}
       </h1>
       <p className="text-secondary-foreground text-sm text-justify">
-        {obra.nombre}
+        {obra.name}
+      </p>
+      <p className="text-secondary-foreground text-sm text-justify">
+        Tipo de proyecto: {obra.projectType}
+      </p>
+      <p className="text-secondary-foreground text-sm text-justify">
+        Estado: Activo
       </p>
       <span className="text-sm text-gray-400">
-        Proyecto: {obra.tipo_proyecto}
+        Residente: {obra.resident}
       </span>
     </div>
   );

@@ -1,23 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import ObraList from "@/components/obraList";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import ObraCard from "@/components/obraCard";
 
 interface Obra {
-  id: string;
-  tipo_proyecto: string;
-  abreviatura: string;
-  nombre: string;
-  codigo_CUI: string;
+  cui: string;
+  name: string;
+  areaOrLength: string | null;
+  resident: string;
+  projectType: string;
 }
 
 type obrasProsp = {
@@ -25,58 +18,51 @@ type obrasProsp = {
 }
 
 function SideDashboard({ obrasT }: obrasProsp) {
-  const [selectValue, setSelectValue] = useState<string | undefined>("");
   const [searchValue, setSearchValue] = useState("");
   const [filteredObras, setFilteredObras] = useState<Obra[]>(obrasT);
 
   const handleSearch = (event: React.FormEvent) => {
     event.preventDefault();
-
     const searchTerm = searchValue.toLowerCase();
 
     const filtered = obrasT.filter((obra) => {
-      const matchesSelect = selectValue ? obra.tipo_proyecto === selectValue : true;
-
-      const matchesSearch = 
-        obra.nombre.toLowerCase().includes(searchTerm) || 
-        obra.abreviatura.toLowerCase().includes(searchTerm) || 
-        obra.codigo_CUI.includes(searchTerm);
-
-      return matchesSelect && matchesSearch;
+      const matchesSearch =
+        obra.name.toLowerCase().includes(searchTerm) ||
+        obra.projectType.toLowerCase().includes(searchTerm) ||
+        obra.cui.toLowerCase().includes(searchTerm) ||
+        obra.resident.toLowerCase().includes(searchTerm);
+      return matchesSearch;
     });
 
     setFilteredObras(filtered);
   };
 
   return (
-    <div className="flex flex-col gap-4 h-full w-full">
-      <div className="text-center text-transparent bg-gradient-to-r text-slate-800 dark:text-white bg-clip-text font-extrabold text-4xl">
-        <span>Obras</span>
+    <div className="flex flex-col gap-4 h-full w-full max-w-[500px]">
+      <div className="text-center text-red-500 dark:text-white bg-clip-text font-extrabold text-xl sm:text-xl md:text-2xl lg:text-4xl">
+        <span>Obras por </span>
+        <span className="sm:text-lg md:text-xl lg:text-4xl">administración </span>
+        <span>directa</span>
       </div>
-
       <form onSubmit={handleSearch} className="flex flex-col gap-4">
-        <Select value={selectValue} onValueChange={setSelectValue}>
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="Seleccionar" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="OAD">Obras por administración directa</SelectItem>
-            <SelectItem value="OC">Obras por contrata</SelectItem>
-          </SelectContent>
-        </Select>
-
         <Input
-          placeholder="Buscar por descripción, abreviatura o código CUI"
+          placeholder="Buscar por código CUI, descripción o residente"
           value={searchValue}
           onChange={(e) => setSearchValue(e.target.value)}
         />
 
         <Button type="submit">Buscar</Button>
       </form>
-
-      <div className="flex md:flex-col gap-4 overflow-auto">
-        <h1 className="text-2xl font-semibold mb-4">Lista de Obras</h1>
-        <ObraList obras={filteredObras} />
+      <div className="flex md:flex-col gap-4 overflow-y-auto">
+        <div className="space-y-4">
+          {filteredObras.length > 0 ? (
+            filteredObras.map((obra, index) => (
+              <ObraCard key={index} obra={obra} />
+            ))
+          ) : (
+            <p>No se encontraron resultados para tu búsqueda.</p>
+          )}
+        </div>
       </div>
     </div>
   );

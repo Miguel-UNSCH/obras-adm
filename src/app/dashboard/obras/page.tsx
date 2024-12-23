@@ -1,24 +1,24 @@
-import CalendarCustom from "@/components/views/calendar-custom";
-import MapCustom from "@/components/views/map-custom";
-import MapDrawingPolygon from "@/components/views/map-drawing-polygon";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
+import { getProyectos } from "@/actions/obras-actions";
+import ObrasContainer from "./obras-container";
 
 async function Page() {
 
+  const proyectos = await getProyectos();
+
+  const obras = proyectos.map((proyecto: any) => ({
+    nombre: proyecto.nombre,
+    codigo_CUI: proyecto.codigo_CUI,
+    nombre_completo: proyecto.nombre_completo,
+    propietario_id: proyecto.propietario_id
+  }));
+
   return (
-    <div className="h-full grid gap-4 grid-cols-1 md:grid-cols-2 md:grid-rows-2">
-      <div className="bg-gradient-to-tr from-[#FFCEB7] dark:from-emerald-800 dark:to-orange-950 to-[#E3D8D6] rounded-3xl shadow-xl">
-        <CalendarCustom />
-      </div>
-      <div className="rounded-3xl overflow-hidden">
-        <MapDrawingPolygon />
-      </div>
-      <div className="rounded-3xl overflow-hidden">
-        <MapCustom />
-      </div>
-      <div className="rounded-3xl bg-secondary p-4"></div>
+    <div className="h-full">
+      <ObrasContainer obras={obras} />
     </div>
-  )
+  );
 }
 
 export default Page;
