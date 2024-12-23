@@ -55,7 +55,7 @@ WORKDIR /app
 COPY package*.json ./ 
 
 # Instalar las dependencias
-RUN npm install
+RUN npm install -g prisma && npm install
 
 # Copiar el resto de la aplicación
 COPY . .
@@ -64,7 +64,7 @@ COPY . .
 RUN npm run build
 
 # 2. Etapa de producción
-FROM node:18-alpine
+FROM node:20-alpine AS builder
 
 # Establecer el directorio de trabajo
 WORKDIR /app
