@@ -50,10 +50,10 @@ export async function getProyectos() {
     });
 
     // Extraer los códigos CUI existentes en coordinates
-    const existingCuis = new Set(coordinates.map(coordinate => coordinate.cui));
+    const existingCuis = new Set(coordinates.map((coordinate:any) => coordinate.cui));
 
     // Filtrar los proyectos que no están en coordinates
-    const missingProjects = result.filter(project => !existingCuis.has(project.codigo_CUI));
+    const missingProjects = result.filter((project:any) => !existingCuis.has(project.codigo_CUI));
 
     return missingProjects;
 
