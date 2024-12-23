@@ -52,7 +52,10 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 
 # Copiar los archivos de package.json y package-lock.json (si existe)
+COPY prisma ./prisma
 COPY package*.json ./ 
+
+RUN apk add --no-cache openssl
 
 # Instalar las dependencias
 RUN npm install -g prisma && npm install
