@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 
 import db from "@/lib/database";
@@ -7,7 +8,7 @@ export async function getDetalles(id: string) {
     const result = await db.coordinates.findMany();
 
     // Buscar la obra con el id proporcionado
-    const obraEncontrada = result.find((obra) => obra.id === id);
+    const obraEncontrada = result.find((obra: any) => obra.id === id);
 
     // Si no se encuentra la obra, devolver null
     if (!obraEncontrada) {
